@@ -12,7 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->enum('role', ['warga', 'pengankut', 'admin'])->default('warga')->after('password');
+            $table->foreignId('banjar_id')->nullable()->after('role')->constarined()->nullOnDelete();
+            $table->string('phone')->nullable()->after('bajar_id');
+            $table->string('address')->nullable()->after('phone');
+            $table->string('avatar_path')->nullable()->after('address');
         });
     }
 
@@ -22,7 +26,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropConstrainedForeignId('banjar_id');
+            $table->dropColumn(['role', 'phone', 'address', 'avatar_path']);
         });
     }
 };
