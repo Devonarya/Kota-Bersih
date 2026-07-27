@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('news', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table-> string('title');
+            $table->enum('category', ['daur_ulang', 'edukasi', 'kegiatan', 'penguguman']);
+            $table->text('content');
+            $table->string('cover_image_path')->nullable();
+            $table->enum('status', ['draft', 'published'])->default('draft');
+            $table->date('published_at')->nullable();
             $table->timestamps();
         });
     }
