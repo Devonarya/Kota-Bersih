@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Banjar;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,11 +15,10 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        collect([
+            ['name' => 'Banjar Tegal Sari', 'desa' => 'Desa Dauhwaru', 'family_count' => 142],
+            ['name' => 'Banjar Pande Mas', 'desa' => 'Desa Dauhwaru', 'family_count' => 98],
+            ['name' => 'Banjar Kertha Wangi', 'desa' => 'Desa Dauhwaru', 'family_count' => 76],
+        ])->each(fn(array $banjar) => Banjar::create($banjar));
     }
 }

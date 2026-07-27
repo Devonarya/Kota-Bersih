@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('banjar_id')->constrained()->cascadeOnDelete();
             $table->enum('jenis_sampah', ['organik', 'anorganik', 'Kaca', 'b3']);
-            $table->text(keterangan)->nullable();
+            $table->text('keterangan')->nullable();
             $table->enum('status', ['pending', 'diterima', 'ditolak', 'selesai'])->default('selesai');
             $table->foreignId('pengangku_id')->nullable()->constrained('users')->nullOnDelete();
             $table->date('scheduled_date')->nullable();
