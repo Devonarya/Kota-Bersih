@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use illuminate\view\View;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
@@ -23,8 +23,8 @@ class LoginController extends Controller
         ]);
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
-            throw \Illuminate\ValidationException::withMessages([
-                'email' => 'Email atau password yang anda masukan salah.',
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => 'Email atau password yang anda masukkan salah.',
             ]);
         }
 
@@ -40,6 +40,6 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('Login');
+        return redirect()->route('login');
     }
 }
