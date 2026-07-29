@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'role', 'banjar_id', 'phone', 'address', 'avatar_path'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -35,24 +35,32 @@ class User extends Authenticatable
     public function initials(): string
     {
         $words = preg_split('/\s+/', trim($this->name)) ?: [];
-        $initials = array_map(fn(string $word)=> mb_strtoupper(mb_substr($word, 0,1)), array_slice($word, 0, 2));
+        $initials = array_map(fn (string $word) => mb_strtoupper(mb_substr($word, 0, 1)), array_slice($words, 0, 2));
 
         return implode('', $initials) ?: '?';
     }
 
+    /**
+     * @return BelongsTo<Banjar, $this>
+     */
     public function banjar(): BelongsTo
     {
-        return $this->belongTo(Banjar::class);
+        return $this->belongsTo(Banjar::class);
     }
 
+    /**
+     * @return HasMany<WasteDeposit, $this>
+     */
     public function wasteDeposits(): HasMany
     {
         return $this->hasMany(WasteDeposit::class);
     }
 
+    /**
+     * @return HasMany<News, $this>
+     */
     public function news(): HasMany
     {
         return $this->hasMany(News::class);
     }
-
 }

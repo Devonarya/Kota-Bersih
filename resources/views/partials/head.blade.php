@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>{{ $title ?? 'SiSampah' }} — Manajemen Sistem Sampah</title>
+<title>{{ $title ?? 'KotaBersih' }} — Manajemen Sistem Sampah</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script>

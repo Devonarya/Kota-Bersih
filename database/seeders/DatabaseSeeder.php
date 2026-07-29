@@ -19,6 +19,6 @@ class DatabaseSeeder extends Seeder
             ['name' => 'Banjar Tegal Sari', 'desa' => 'Desa Dauhwaru', 'family_count' => 142],
             ['name' => 'Banjar Pande Mas', 'desa' => 'Desa Dauhwaru', 'family_count' => 98],
             ['name' => 'Banjar Kertha Wangi', 'desa' => 'Desa Dauhwaru', 'family_count' => 76],
-        ])->each(fn(array $banjar) => Banjar::create($banjar));
+        ])->each(fn (array $banjar) => Banjar::create($banjar));
     }
 }

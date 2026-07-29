@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Banjar;
+use Illuminate\Contracts\View\View;
 
 class BanjarController extends Controller
 {
     public function index(): View
     {
         return view('banjar.index', [
-            'bajars' => Banjar::withCount('users')->orderBy('name')->get(),
+            'banjars' => Banjar::withCount('users')->orderBy('name')->get(),
         ]);
     }
 }

@@ -8,7 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
-class DepoSampahController extends Controller
+class WasteDepositController extends Controller
 {
     public function index(Request $request): View
     {
@@ -17,7 +17,7 @@ class DepoSampahController extends Controller
         $month = $request->string('month')->toString() ?: now()->format('Y-m');
         $jenis = $request->string('jenis')->toString() ?: 'semua';
 
-        $period = Carbon::createFromFormat('Y-m', $month)->startofMonth();
+        $period = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
 
         $deposits = $user->wasteDeposits()
             ->whereBetween('deposited_on', [$period->copy()->startOfMonth(), $period->copy()->endOfMonth()])
@@ -32,13 +32,13 @@ class DepoSampahController extends Controller
             'totalSetoran' => $user->wasteDeposits()->count(),
             'kgBulanIni' => (float) $user->wasteDeposits()
                 ->whereBetween('deposited_on', [now()->startOfMonth(), now()->endOfMonth()])
-                ->sum('berat_kg'),            
+                ->sum('berat_kg'),
         ]);
     }
 
-    public function store(Request  $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
-        $validate = $request->validate([
+        $validated = $request->validate([
             'jenis_sampah' => ['required', 'in:organik,plastik,kertas,b3'],
             'keterangan' => ['nullable', 'string', 'max:500'],
             'berat_kg' => ['nullable', 'numeric', 'min:0'],
@@ -52,6 +52,6 @@ class DepoSampahController extends Controller
             'deposited_on' => now()->toDateString(),
         ]);
 
-        return redirect()->route('sampah.index')->with('status', 'Setoran sampah berhasil dicatat');
+        return redirect()->route('sampah.index')->with('status', 'Setoran sampah berhasil dicatat.');
     }
 }

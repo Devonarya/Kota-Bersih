@@ -8,7 +8,7 @@
         <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-3">
             <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                 <span class="h-10 w-10 rounded-full bg-gray-200"></span>
-                <span class="text-sm font-medium leading-tight text-gray-800">Manajemen Sistem<br>Sampah</span>
+                <span class="text-sm font-medium leading-tight text-gray-800">KotaBersih</span>
             </a>
 
             <div class="hidden items-center gap-8 text-sm text-gray-700 md:flex">

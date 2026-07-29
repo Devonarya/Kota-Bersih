@@ -14,7 +14,7 @@
                 </div>
 
                 <h1 class="mt-6 text-center text-2xl text-gray-800">Selamat Datang</h1>
-                <p class="text-center text-2xl text-gray-800">Kota Bersih</p>
+                <p class="text-center text-2xl text-gray-800">KotaBersih</p>
 
                 @yield('content')
             </div>
