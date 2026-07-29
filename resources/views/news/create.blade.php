@@ -97,9 +97,11 @@
             placeholder: 'Tulis isi berita di sini...',
             modules: {
                 toolbar: [
+                    [{ header: [2, 3, false] }],
                     ['bold', 'italic', 'underline'],
+                    ['blockquote'],
                     [{ list: 'ordered' }, { list: 'bullet' }],
-                    ['link'],
+                    ['link', 'image'],
                     ['clean'],
                 ],
             },
