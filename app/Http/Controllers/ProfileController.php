@@ -6,6 +6,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
@@ -32,6 +33,30 @@ class ProfileController extends Controller
         $user->update($validated);
 
         return redirect()->route('profil.edit')->with('status', 'Profil berhasil diperbarui.');
+    }
+
+    public function updateAvatar(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'avatar' => ['required', 'image', 'max:2048'],
+        ], [
+            'avatar.required' => 'Silakan pilih foto terlebih dahulu.',
+            'avatar.image' => 'Berkas harus berupa gambar.',
+            'avatar.max' => 'Ukuran foto maksimal 2 MB.',
+        ]);
+
+        $user = $request->user();
+        $oldPath = $user->avatar_path;
+
+        $user->update([
+            'avatar_path' => $request->file('avatar')->store('avatars', 'public'),
+        ]);
+
+        if ($oldPath) {
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        return redirect()->route('profil.edit')->with('status', 'Foto profil berhasil diperbarui.');
     }
 
     public function updatePassword(Request $request): RedirectResponse

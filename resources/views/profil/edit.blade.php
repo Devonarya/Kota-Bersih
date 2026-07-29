@@ -29,10 +29,22 @@
                 </div>
             </div>
 
-            <button type="button" disabled title="Segera hadir"
-                class="mt-6 w-full cursor-not-allowed rounded-xl bg-gray-200 px-4 py-2 text-sm font-medium text-gray-500">
-                Ubah Foto
-            </button>
+            <form method="POST" action="{{ route('profil.avatar') }}" enctype="multipart/form-data" class="mt-6"
+                x-data x-ref="avatarForm">
+                @csrf
+
+                <input type="file" name="avatar" accept="image/*" class="hidden" x-ref="avatarInput"
+                    @change="$refs.avatarForm.submit()">
+
+                <button type="button" @click="$refs.avatarInput.click()"
+                    class="w-full rounded-xl bg-brand-700 px-4 py-2 text-sm font-medium text-white hover:bg-brand-800">
+                    Ubah Foto
+                </button>
+
+                @error('avatar')
+                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                @enderror
+            </form>
         </div>
 
         <div class="rounded-2xl bg-white p-6 shadow-sm lg:col-span-2">

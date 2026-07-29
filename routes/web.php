@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/profil', [ProfileController::class, 'edit'])->name('profil.edit');
     Route::patch('/profil', [ProfileController::class, 'update'])->name('profil.update');
+    Route::post('/profil/foto', [ProfileController::class, 'updateAvatar'])->name('profil.avatar');
     Route::put('/profil/password', [ProfileController::class, 'updatePassword'])->name('profil.password');
 
     Route::middleware('role:warga')->group(function () {
