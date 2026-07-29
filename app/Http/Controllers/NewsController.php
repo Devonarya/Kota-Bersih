@@ -60,7 +60,11 @@ class NewsController extends Controller
             'category' => ['required', Rule::in(array_keys(self::CATEGORIES))],
             'published_at' => ['required', 'date'],
             'cover_image' => ['nullable', 'image', 'max:2048'],
-            'content' => ['required', 'string'],
+            'content' => ['required', 'string', function ($attribute, $value, $fail) {
+                if (trim(strip_tags($value)) === '') {
+                    $fail('Isi berita wajib diisi.');
+                }
+            }],
             'action' => ['required', 'in:draft,publish'],
         ]);
 

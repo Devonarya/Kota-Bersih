@@ -5,7 +5,7 @@
     <p class="text-sm text-gray-500">Tulis dan publikasikan berita baru</p>
 
     <div x-data="{ confirmOpen: false }" class="mt-6">
-        <form method="POST" action="{{ route('news.store') }}" enctype="multipart/form-data" class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
+        <form id="news-form" method="POST" action="{{ route('news.store') }}" enctype="multipart/form-data" class="space-y-5 rounded-2xl bg-white p-6 shadow-sm">
             @csrf
 
             <div>
@@ -53,11 +53,12 @@
 
             <div>
                 <label class="mb-1 block text-sm text-gray-600">Isi Berita</label>
-                <textarea name="content" rows="8" required
-                    class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">{{ old('content') }}</textarea>
+                <div id="content-editor" class="rounded-xl border border-gray-300 bg-white text-sm [&_.ql-container]:min-h-[180px] [&_.ql-container]:rounded-b-xl [&_.ql-container]:border-0 [&_.ql-container]:font-sans [&_.ql-container]:text-sm [&_.ql-toolbar]:rounded-t-xl [&_.ql-toolbar]:border-0 [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-gray-300"></div>
+                <input type="hidden" name="content" id="content-input" value="{{ old('content') }}">
                 @error('content')
                     <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                 @enderror
+                <p id="content-error" class="mt-1 hidden text-sm text-red-600">Isi berita wajib diisi.</p>
             </div>
 
             <div class="flex justify-end gap-3 pt-2">
@@ -83,3 +84,43 @@
         </form>
     </div>
 @endsection
+
+@push('styles')
+    <link href="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.snow.css" rel="stylesheet">
+@endpush
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/quill@1.3.7/dist/quill.js"></script>
+    <script>
+        const quill = new Quill('#content-editor', {
+            theme: 'snow',
+            placeholder: 'Tulis isi berita di sini...',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link'],
+                    ['clean'],
+                ],
+            },
+        });
+
+        const contentInput = document.getElementById('content-input');
+        if (contentInput.value) {
+            quill.clipboard.dangerouslyPasteHTML(contentInput.value);
+        }
+
+        document.getElementById('news-form').addEventListener('submit', (event) => {
+            const isEmpty = quill.getText().trim().length === 0;
+            contentInput.value = isEmpty ? '' : quill.root.innerHTML;
+
+            const errorEl = document.getElementById('content-error');
+            if (isEmpty) {
+                event.preventDefault();
+                errorEl.classList.remove('hidden');
+            } else {
+                errorEl.classList.add('hidden');
+            }
+        });
+    </script>
+@endpush

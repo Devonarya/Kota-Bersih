@@ -15,7 +15,7 @@
     <div x-data="{ depoOpen: false }">
     <div class="flex flex-col items-start justify-between gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center">
         <div class="flex items-center gap-4">
-            <x-avatar :name="$user->name" size="h-16 w-16 text-xl" />
+            <x-avatar :name="$user->name" :src="$user->avatarUrl()" size="h-16 w-16 text-xl" />
             <div>
                 <p class="text-xl font-semibold text-gray-800">{{ $user->name }}</p>
                 <p class="text-sm text-gray-500">{{ $user->banjar->name ?? 'Belum ada banjar' }} &middot; No. Warga {{ $user->id }}</p>
@@ -25,10 +25,6 @@
             <div>
                 <p class="text-2xl font-semibold text-brand-700">{{ $totalSetoran }}</p>
                 <p class="text-sm text-gray-500">Total Setoran</p>
-            </div>
-            <div>
-                <p class="text-2xl font-semibold text-brand-700">{{ number_format($kgBulanIni, 1) }} <span class="text-sm font-normal">kg</span></p>
-                <p class="text-sm text-gray-500">Bulan Ini</p>
             </div>
         </div>
     </div>

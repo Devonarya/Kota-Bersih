@@ -11,7 +11,7 @@
     <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div class="rounded-2xl bg-white p-6 text-center shadow-sm">
             <div class="flex justify-center">
-                <x-avatar :name="$user->name" size="h-24 w-24 text-3xl" />
+                <x-avatar :name="$user->name" :src="$user->avatarUrl()" size="h-24 w-24 text-3xl" />
             </div>
             <p class="mt-4 text-lg font-semibold text-gray-800">{{ $user->name }}</p>
             <p class="text-brand-600">{{ $roleLabels[$user->role] ?? $user->role }}</p>

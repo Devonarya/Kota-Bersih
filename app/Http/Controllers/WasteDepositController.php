@@ -30,9 +30,6 @@ class WasteDepositController extends Controller
             'month' => $month,
             'jenis' => $jenis,
             'totalSetoran' => $user->wasteDeposits()->count(),
-            'kgBulanIni' => (float) $user->wasteDeposits()
-                ->whereBetween('deposited_on', [now()->startOfMonth(), now()->endOfMonth()])
-                ->sum('berat_kg'),
         ]);
     }
 

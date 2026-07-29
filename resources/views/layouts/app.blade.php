@@ -28,7 +28,7 @@
 
             <div class="relative" x-data="{ open: false }" @click.outside="open = false">
                 <button @click="open = !open" type="button">
-                    <x-avatar :name="auth()->user()->name" />
+                    <x-avatar :name="auth()->user()->name" :src="auth()->user()->avatarUrl()" />
                 </button>
 
                 <div x-show="open" x-cloak class="absolute right-0 z-20 mt-2 w-52 rounded-xl border border-gray-100 bg-white p-2 shadow-lg">
@@ -52,5 +52,7 @@
 
         @yield('content')
     </main>
+
+    @stack('scripts')
 </body>
 </html>
