@@ -16,12 +16,12 @@
             <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $totalWarga }}</p>
         </div>
         <div class="rounded-2xl bg-white p-6 shadow-sm">
-            <p class="text-sm text-gray-500">Sampah Terkumpul</p>
-            <p class="mt-2 text-3xl font-semibold text-gray-800">{{ number_format($totalBeratKg / 1000, 1) }} <span class="text-base font-normal text-gray-500">ton</span></p>
+            <p class="text-sm text-gray-500">Setoran di Lokasi Banjar Warga</p>
+            <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $totalSetoranBanjar }} <span class="text-base font-normal text-gray-500">setoran</span></p>
         </div>
         <div class="rounded-2xl bg-white p-6 shadow-sm">
-            <p class="text-sm text-gray-500">Jadwal Hari ini</p>
-            <p class="mt-2 text-3xl font-semibold text-gray-400">— <span class="text-base font-normal text-gray-500">segera hadir</span></p>
+            <p class="text-sm text-gray-500">Banjar</p>
+            <p class="mt-2 text-3xl font-semibold text-gray-800">{{ $banjar->name ?? '—' }}</p>
         </div>
     </div>
 

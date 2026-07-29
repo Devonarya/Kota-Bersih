@@ -11,9 +11,12 @@ class DashboardController extends Controller
 {
     public function index(Request $request): View
     {
+        $banjar = $request->user()->banjar;
+
         return view('dashboard', [
             'totalWarga' => User::where('role', 'warga')->count(),
-            'totalBeratKg' => (float) WasteDeposit::sum('berat_kg'),
+            'totalSetoranBanjar' => $banjar ? WasteDeposit::where('banjar_id', $banjar->id)->count() : 0,
+            'banjar' => $banjar,
         ]);
     }
 }
