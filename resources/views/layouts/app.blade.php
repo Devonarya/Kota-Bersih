@@ -18,12 +18,13 @@
 
                 @if (auth()->user()->role === 'warga')
                     <a href="{{ route('sampah.index') }}" class="{{ request()->routeIs('sampah.*') ? 'font-semibold text-brand-700' : 'hover:text-brand-700' }}">Warga</a>
-                @else
-                    <span class="cursor-not-allowed text-gray-300" title="Segera hadir">Warga</span>
                 @endif
 
                 <a href="{{ route('news.index') }}" class="{{ request()->routeIs('news.*') ? 'font-semibold text-brand-700' : 'hover:text-brand-700' }}">News</a>
-                <span class="cursor-not-allowed text-gray-300" title="Segera hadir">Pengangkut</span>
+
+                @if (auth()->user()->role === 'pengangkut')
+                    <a href="{{ route('pengangkut.index') }}" class="{{ request()->routeIs('pengangkut.*') ? 'font-semibold text-brand-700' : 'hover:text-brand-700' }}">Pengangkut</a>
+                @endif
             </div>
 
             <div class="relative" x-data="{ open: false }" @click.outside="open = false">

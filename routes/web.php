@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BanjarController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\PengangkutController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WasteDepositController;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,12 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:warga')->group(function () {
         Route::get('/sampah', [WasteDepositController::class, 'index'])->name('sampah.index');
         Route::post('/sampah', [WasteDepositController::class, 'store'])->name('sampah.store');
+    });
+
+    Route::middleware('role:pengangkut')->group(function () {
+        Route::get('/pengangkut', [PengangkutController::class, 'index'])->name('pengangkut.index');
+        Route::patch('/pengangkut/{deposit}/terima', [PengangkutController::class, 'accept'])->name('pengangkut.accept');
+        Route::patch('/pengangkut/{deposit}/tolak', [PengangkutController::class, 'reject'])->name('pengangkut.reject');
     });
 
     Route::get('/banjar', [BanjarController::class, 'index'])->name('banjar.index');

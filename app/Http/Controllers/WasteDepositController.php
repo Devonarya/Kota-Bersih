@@ -46,6 +46,7 @@ class WasteDepositController extends Controller
             'jenis_sampah' => $validated['jenis_sampah'],
             'keterangan' => $validated['keterangan'] ?? null,
             'berat_kg' => $validated['berat_kg'] ?? null,
+            'status' => 'pending',
             'deposited_on' => now()->toDateString(),
         ]);
 
