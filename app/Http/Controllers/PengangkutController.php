@@ -1,0 +1,96 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\WasteDeposit;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+
+class PengangkutController extends Controller
+{
+    /**
+     * @var array<string, string>
+     */
+    public const TIME_SLOTS = [
+        'pagi' => 'Pagi (07.00 - 10.00)',
+        'siang' => 'Siang (10.00 - 14.00)',
+        'sore' => 'Sore (14.00 - 17.00)',
+    ];
+
+    public function index(Request $request): View
+    {
+        $user = $request->user();
+
+        return view('pengangkut.index', [
+            'requests' => WasteDeposit::with(['user', 'banjar'])
+                ->where('status', 'pending')
+                ->where('banjar_id', $user->banjar_id)
+                ->orderBy('created_at')
+                ->get(),
+            'jadwal' => WasteDeposit::with(['user', 'banjar'])
+                ->where('status', 'diterima')
+                ->where('pengangkut_id', $user->id)
+                ->orderBy('scheduled_date')
+                ->get(),
+            'timeSlots' => self::TIME_SLOTS,
+        ]);
+    }
+
+    public function accept(Request $request, WasteDeposit $deposit): RedirectResponse
+    {
+        $this->pastikanBisaDiproses($request, $deposit);
+
+        $validated = $request->validate([
+            'jadwal' => ['required', 'in:hari_ini,besok,pilih'],
+            'scheduled_date' => ['nullable', 'required_if:jadwal,pilih', 'date', 'after_or_equal:today'],
+            'scheduled_time_slot' => ['required', Rule::in(array_keys(self::TIME_SLOTS))],
+        ], [
+            'scheduled_date.required_if' => 'Silakan pilih tanggal pengangkutan.',
+            'scheduled_date.after_or_equal' => 'Tanggal pengangkutan tidak boleh di masa lalu.',
+        ]);
+
+        $deposit->update([
+            'status' => 'diterima',
+            'pengangkut_id' => $request->user()->id,
+            'scheduled_date' => match($validated['jadwal'])
+            {
+                'hari_ini' => now()->toDateString(),
+                'besok' => now()->addDay()->toDateString(),
+                default => $validated['scheduled_date'],
+            },
+            'scheduled_time_slot' =>
+            $validated['scheduled_time_slot'],
+        ]);
+
+        return redirect()->route('pengangkut.index')
+        ->with('status', 'permintaaan diterima dan jadwal sudah dikirim ke warga.');
+    }
+
+    public function reject(Request $request, WasteDeposit $deposit): RedirectResponse
+    {
+        $this->pastikanBisaDiproses($request, $deposit);
+
+        $deposit->update([
+            'status' => 'ditolak',
+            'pengangkut_id' => $request->user()->id,
+        ]);
+
+        return redirect()->route('pengangkut.index')
+            ->with('status', 'permintaan angkut ditolah.');
+    }
+
+    /**
+     * Pengangkut hanya boleh memproses permintaan pending di 
+     * banajrnya sendiri.
+     */
+
+    protected function pastikanBisaDiproses(Request $request, WasteDeposit $deposit): void
+    {
+        abort_unless(
+            $deposit->status === 'pending' && $deposit->banjar_id === $request->user()->banjar_id,
+            403
+        );
+    }
+}
