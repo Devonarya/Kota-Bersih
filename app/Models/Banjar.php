@@ -6,9 +6,14 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'desa', 'description', 'family_count'])]
+#[Fillable(['name', 'desa', 'description', 'logo_path', 'family_count'])]
 class Banjar extends Model
 {
+    public function logoUrl(): ?string
+    {
+        return $this->logo_path ? asset('storage/'.$this->logo_path) : null;
+    }
+
     /**
      * @return HasMany<User, $this>
      */

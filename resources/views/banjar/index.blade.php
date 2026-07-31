@@ -19,7 +19,12 @@
         @foreach ($banjars as $banjar)
             <div class="overflow-hidden rounded-2xl bg-white shadow-sm">
                 <div class="flex h-40 items-center justify-center bg-brand-700">
-                    <span class="text-2xl font-semibold text-white">Gambar</span>
+                    @if ($banjar->logoUrl())
+                        <img src="{{ $banjar->logoUrl() }}" alt="Logo {{ $banjar->name }}"
+                            class="h-full w-full object-cover">
+                    @else
+                        <span class="text-2xl font-semibold text-white">Gambar</span>
+                    @endif
                 </div>
                 <div class="p-5">
                     @if ($banjar->desa)

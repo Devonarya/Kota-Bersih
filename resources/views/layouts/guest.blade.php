@@ -10,7 +10,7 @@
         <div class="absolute inset-x-0 top-14 flex justify-center px-4">
             <div class="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
                 <div class="flex justify-center">
-                    <div class="h-20 w-20 rounded-full bg-gray-200"></div>
+                    <x-logo size="h-20 w-20" />
                 </div>
 
                 <h1 class="mt-6 text-center text-2xl text-gray-800">Selamat Datang</h1>
