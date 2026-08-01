@@ -53,7 +53,7 @@ class RegisterController extends Controller
             'role' => $validated['role'],
         ]);
 
-        if (! $isWarga && $request->hasFile('banjar_logo')) {
+        if ($request->hasFile('banjar_logo')) {
             $this->simpanLogoBanjar($request, (int) $validated['banjar_id']);
         }
 
@@ -65,7 +65,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * Simpan logo banjar yang diunggah pengangkut saat mendaftar.
+     * Simpan logo banjar yang diunggah saat mendaftar (warga maupun pengangkut).
      *
      * Catatan: logo ini milik banjar, dipakai bersama semua anggotanya. Kalau banjar
      * yang sama sudah punya logo, logo lama diganti dan filenya dihapus supaya tidak

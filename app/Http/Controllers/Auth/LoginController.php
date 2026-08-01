@@ -30,7 +30,9 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        return redirect()->intended(
+            $request->user()->role === 'admin' ? route('admin.dashboard') : route('dashboard')
+        );
     }
 
     public function destroy(Request $request): RedirectResponse

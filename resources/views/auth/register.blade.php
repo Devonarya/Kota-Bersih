@@ -118,43 +118,43 @@
                     @error('ktp_number')
                         <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                     @enderror
+                </div>
 
-                    <div class="mt-4" x-data="{ namaFile: '' }">
-                        <span class="mb-1.5 block text-xs font-semibold text-ink-soft">Logo Banjar</span>
+                {{-- Berlaku untuk warga maupun pengangkut --}}
+                <div class="mt-4" x-data="{ namaFile: '' }">
+                    <span class="mb-1.5 block text-xs font-semibold text-ink-soft">Logo Banjar</span>
 
-                        <label
-                            @dragover.prevent="$el.classList.add('border-leaf-600','bg-leaf-100')"
-                            @dragleave.prevent="$el.classList.remove('border-leaf-600','bg-leaf-100')"
-                            @drop.prevent="
-                                $el.classList.remove('border-leaf-600','bg-leaf-100');
-                                $refs.logo.files = $event.dataTransfer.files;
-                                namaFile = $refs.logo.files[0] ? $refs.logo.files[0].name : '';
-                            "
-                            class="block cursor-pointer rounded-xl border-[1.5px] border-dashed border-line px-5 py-8 text-center transition hover:border-leaf-600 hover:bg-leaf-100">
+                    <label
+                        @dragover.prevent="$el.classList.add('border-leaf-600','bg-leaf-100')"
+                        @dragleave.prevent="$el.classList.remove('border-leaf-600','bg-leaf-100')"
+                        @drop.prevent="
+                            $el.classList.remove('border-leaf-600','bg-leaf-100');
+                            $refs.logo.files = $event.dataTransfer.files;
+                            namaFile = $refs.logo.files[0] ? $refs.logo.files[0].name : '';
+                        "
+                        class="block cursor-pointer rounded-xl border-[1.5px] border-dashed border-line px-5 py-8 text-center transition hover:border-leaf-600 hover:bg-leaf-100">
 
-                            <svg class="mx-auto h-[26px] w-[26px] text-ink-faint" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M7 18a4.6 4.4 0 0 1-1.5-8.86A6 6 0 0 1 17.2 7.2 5 5 0 0 1 17 17H7Z" />
-                                <path d="M12 12v9M9 15l3-3 3 3" />
-                            </svg>
+                        <svg class="mx-auto h-[26px] w-[26px] text-ink-faint" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M7 18a4.6 4.4 0 0 1-1.5-8.86A6 6 0 0 1 17.2 7.2 5 5 0 0 1 17 17H7Z" />
+                            <path d="M12 12v9M9 15l3-3 3 3" />
+                        </svg>
 
-                            <p class="mt-2.5 text-[13px] text-ink-soft">Drag atau drop untuk memilih gambar</p>
-                            <p class="mt-2 text-[12.5px] font-semibold text-leaf-700" x-text="namaFile"></p>
+                        <p class="mt-2.5 text-[13px] text-ink-soft">Drag atau drop untuk memilih gambar</p>
+                        <p class="mt-2 text-[12.5px] font-semibold text-leaf-700" x-text="namaFile"></p>
 
-                            <input type="file" name="banjar_logo" x-ref="logo" accept="image/*" class="hidden"
-                                :disabled="role !== 'pengangkut'"
-                                @change="namaFile = $event.target.files[0] ? $event.target.files[0].name : ''">
-                        </label>
+                        <input type="file" name="banjar_logo" x-ref="logo" accept="image/*" class="hidden"
+                            @change="namaFile = $event.target.files[0] ? $event.target.files[0].name : ''">
+                    </label>
 
-                        <p class="mt-1.5 text-[11.5px] text-ink-faint">
-                            Opsional. Format gambar, maksimal 2 MB. Logo ini dipakai bersama oleh semua anggota banjar
-                            yang dipilih di atas.
-                        </p>
+                    <p class="mt-1.5 text-[11.5px] text-ink-faint">
+                        Opsional. Format gambar, maksimal 2 MB. Logo ini dipakai bersama oleh semua anggota banjar
+                        yang dipilih di atas.
+                    </p>
 
-                        @error('banjar_logo')
-                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    @error('banjar_logo')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 @error('role')
