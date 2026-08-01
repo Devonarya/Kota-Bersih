@@ -51,46 +51,66 @@ class PengangkutController extends Controller
             'scheduled_date.after_or_equal' => 'Tanggal pengangkutan tidak boleh di masa lalu.',
         ]);
 
-        $deposit->update([
+        $this->prosesJikaMasihPending($deposit, [
             'status' => 'diterima',
             'pengangkut_id' => $request->user()->id,
-            'scheduled_date' => match($validated['jadwal'])
-            {
-                'hari_ini' => now()->toDateString(),
-                'besok' => now()->addDay()->toDateString(),
-                default => $validated['scheduled_date'],
-            },
-            'scheduled_time_slot' =>
-            $validated['scheduled_time_slot'],
+            'scheduled_date' => $this->tanggalPengangkutan($validated),
+            'scheduled_time_slot' => $validated['scheduled_time_slot'],
         ]);
 
         return redirect()->route('pengangkut.index')
-        ->with('status', 'permintaaan diterima dan jadwal sudah dikirim ke warga.');
+            ->with('status', 'Permintaan diterima dan jadwal sudah dikirim ke warga.');
     }
 
     public function reject(Request $request, WasteDeposit $deposit): RedirectResponse
     {
         $this->pastikanBisaDiproses($request, $deposit);
 
-        $deposit->update([
+        $this->prosesJikaMasihPending($deposit, [
             'status' => 'ditolak',
             'pengangkut_id' => $request->user()->id,
         ]);
 
         return redirect()->route('pengangkut.index')
-            ->with('status', 'permintaan angkut ditolah.');
+            ->with('status', 'Permintaan angkut ditolak.');
     }
 
     /**
-     * Pengangkut hanya boleh memproses permintaan pending di 
-     * banajrnya sendiri.
+     * Pengangkut hanya boleh memproses permintaan pending di
+     * banjarnya sendiri.
      */
-
     protected function pastikanBisaDiproses(Request $request, WasteDeposit $deposit): void
     {
         abort_unless(
             $deposit->status === 'pending' && $deposit->banjar_id === $request->user()->banjar_id,
             403
         );
+    }
+
+    /**
+     * Tulis perubahan hanya jika status di database masih 'pending', supaya
+     * dua pengangkut tidak bisa memproses permintaan yang sama bersamaan.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    protected function prosesJikaMasihPending(WasteDeposit $deposit, array $attributes): void
+    {
+        $terproses = WasteDeposit::whereKey($deposit->getKey())
+            ->where('status', 'pending')
+            ->update($attributes);
+
+        abort_if($terproses === 0, 409, 'Permintaan ini sudah diproses pengangkut lain.');
+    }
+
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    protected function tanggalPengangkutan(array $validated): string
+    {
+        return match ($validated['jadwal']) {
+            'hari_ini' => now()->toDateString(),
+            'besok' => now()->addDay()->toDateString(),
+            default => $validated['scheduled_date'],
+        };
     }
 }
