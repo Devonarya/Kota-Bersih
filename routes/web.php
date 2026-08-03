@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\MemberRequestController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BanjarController;
@@ -28,6 +29,10 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+        Route::get('/permintaan', [MemberRequestController::class, 'index'])->name('permintaan.index');
+        Route::patch('/permintaan/{user}/setujui', [MemberRequestController::class, 'approve'])->name('permintaan.approve');
+        Route::patch('/permintaan/{user}/tolak', [MemberRequestController::class, 'reject'])->name('permintaan.reject');
     });
 
     Route::get('/profil', [ProfileController::class, 'edit'])->name('profil.edit');

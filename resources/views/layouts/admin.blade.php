@@ -1,13 +1,12 @@
 @php
-    // Menu selain Dashboard belum punya halaman — dibuat tidak bisa diklik dulu.
+    // Menu tanpa 'route' belum punya halaman — dibuat tidak bisa diklik dulu.
     $menu = [
         'Keanggotaan' => [
-            ['label' => 'Permintaan Anggota', 'icon' => 'permintaan'],
+            ['label' => 'Permintaan Anggota', 'icon' => 'permintaan', 'route' => 'admin.permintaan.index'],
             ['label' => 'Warga', 'icon' => 'warga'],
             ['label' => 'Pengangkut', 'icon' => 'pengangkut'],
         ],
         'Operasional' => [
-            ['label' => 'Verifikasi Setoran', 'icon' => 'verifikasi'],
             ['label' => 'Banjar', 'icon' => 'banjar'],
         ],
         'Konten' => [
@@ -47,7 +46,9 @@
                 <div class="hidden px-2.5 font-mono text-[10.5px] uppercase tracking-[0.07em] text-ink-faint md:mb-1.5 md:block">Utama</div>
 
                 <a href="{{ route('admin.dashboard') }}"
-                    class="{{ $navItem }} mb-0.5 bg-leaf-100 font-semibold text-leaf-700">
+                    class="{{ $navItem }} mb-0.5 {{ request()->routeIs('admin.dashboard')
+                        ? 'bg-leaf-100 font-semibold text-leaf-700'
+                        : 'text-ink-soft hover:bg-paper' }}">
                     <svg class="h-[17px] w-[17px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="9" rx="1.5" /><rect x="14" y="3" width="7" height="5" rx="1.5" />
                         <rect x="14" y="12" width="7" height="9" rx="1.5" /><rect x="3" y="16" width="7" height="5" rx="1.5" />
@@ -61,11 +62,21 @@
                     <div class="hidden px-2.5 font-mono text-[10.5px] uppercase tracking-[0.07em] text-ink-faint md:mb-1.5 md:block">{{ $grup }}</div>
 
                     @foreach ($items as $item)
-                        <span title="Belum tersedia"
-                            class="{{ $navItem }} mb-0.5 cursor-not-allowed text-ink-soft opacity-60">
-                            @include('admin.partials.icon', ['name' => $item['icon']])
-                            <span class="hidden md:inline">{{ $item['label'] }}</span>
-                        </span>
+                        @if (isset($item['route']))
+                            <a href="{{ route($item['route']) }}"
+                                class="{{ $navItem }} mb-0.5 {{ request()->routeIs($item['route'])
+                                    ? 'bg-leaf-100 font-semibold text-leaf-700'
+                                    : 'text-ink-soft hover:bg-paper' }}">
+                                @include('admin.partials.icon', ['name' => $item['icon']])
+                                <span class="hidden md:inline">{{ $item['label'] }}</span>
+                            </a>
+                        @else
+                            <span title="Belum tersedia"
+                                class="{{ $navItem }} mb-0.5 cursor-not-allowed text-ink-soft opacity-60">
+                                @include('admin.partials.icon', ['name' => $item['icon']])
+                                <span class="hidden md:inline">{{ $item['label'] }}</span>
+                            </span>
+                        @endif
                     @endforeach
                 </div>
             @endforeach
