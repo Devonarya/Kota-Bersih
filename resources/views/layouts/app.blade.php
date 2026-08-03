@@ -17,7 +17,9 @@
                 <a href="{{ route('banjar.index') }}" class="{{ request()->routeIs('banjar.*') ? 'font-semibold text-brand-700' : 'hover:text-brand-700' }}">Banjar</a>
 
                 @if (auth()->user()->role === 'warga')
-                    <a href="{{ route('sampah.index') }}" class="{{ request()->routeIs('sampah.*') ? 'font-semibold text-brand-700' : 'hover:text-brand-700' }}">Warga</a>
+                    <a href="{{ route('pengambilan.index') }}" class="{{ request()->routeIs('pengambilan.*') ? 'font-semibold text-brand-700' : 'hover:text-brand-700' }}">Pengambilan</a>
+
+                    <a href="{{ route('sampah.index') }}" class="{{ request()->routeIs('sampah.*') ? 'font-semibold text-brand-700' : 'hover:text-brand-700' }}">Riwayat</a>
                 @endif
 
                 <a href="{{ route('news.index') }}" class="{{ request()->routeIs('news.*') ? 'font-semibold text-brand-700' : 'hover:text-brand-700' }}">News</a>

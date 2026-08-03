@@ -36,14 +36,16 @@ Route::middleware('auth')->group(function () {
     Route::put('/profil/password', [ProfileController::class, 'updatePassword'])->name('profil.password');
 
     Route::middleware('role:warga')->group(function () {
+        Route::get('/pengambilan', [WasteDepositController::class, 'pengambilan'])->name('pengambilan.index');
+        Route::post('/pengambilan', [WasteDepositController::class, 'store'])->name('pengambilan.store');
         Route::get('/sampah', [WasteDepositController::class, 'index'])->name('sampah.index');
-        Route::post('/sampah', [WasteDepositController::class, 'store'])->name('sampah.store');
     });
 
     Route::middleware('role:pengangkut')->group(function () {
         Route::get('/pengangkut', [PengangkutController::class, 'index'])->name('pengangkut.index');
         Route::patch('/pengangkut/{deposit}/terima', [PengangkutController::class, 'accept'])->name('pengangkut.accept');
         Route::patch('/pengangkut/{deposit}/tolak', [PengangkutController::class, 'reject'])->name('pengangkut.reject');
+        Route::patch('/pengangkut/{deposit}/selesai', [PengangkutController::class, 'complete'])->name('pengangkut.complete');
     });
 
     Route::get('/banjar', [BanjarController::class, 'index'])->name('banjar.index');

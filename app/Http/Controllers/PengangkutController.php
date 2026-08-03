@@ -75,6 +75,22 @@ class PengangkutController extends Controller
             ->with('status', 'Permintaan angkut ditolak.');
     }
 
+    public function complete(Request $request, WasteDeposit $deposit): RedirectResponse
+    {
+        abort_unless(
+            $deposit->status === 'diterima' && $deposit->pengangkut_id === $request->user()->id,
+            403
+        );
+
+        $this->prosesJikaStatus($deposit, 'diterima', [
+            'status' => 'selesai',
+            'deposited_on' => now()->toDateString(),
+        ], 'Pengangkutan ini sudah ditandai selesai.');
+
+        return redirect()->route('pengangkut.index')
+            ->with('status', 'Pengangkutan ditandai selesai dan masuk ke riwayat warga.');
+    }
+
     /**
      * Pengangkut hanya boleh memproses permintaan pending di
      * banjarnya sendiri.
@@ -95,11 +111,21 @@ class PengangkutController extends Controller
      */
     protected function prosesJikaMasihPending(WasteDeposit $deposit, array $attributes): void
     {
+        $this->prosesJikaStatus($deposit, 'pending', $attributes, 'Permintaan ini sudah diproses pengangkut lain.');
+    }
+
+    /**
+     * Tulis perubahan hanya jika status di database masih sesuai yang diharapkan.
+     *
+     * @param  array<string, mixed>  $attributes
+     */
+    protected function prosesJikaStatus(WasteDeposit $deposit, string $dariStatus, array $attributes, string $pesanKonflik): void
+    {
         $terproses = WasteDeposit::whereKey($deposit->getKey())
-            ->where('status', 'pending')
+            ->where('status', $dariStatus)
             ->update($attributes);
 
-        abort_if($terproses === 0, 409, 'Permintaan ini sudah diproses pengangkut lain.');
+        abort_if($terproses === 0, 409, $pesanKonflik);
     }
 
     /**

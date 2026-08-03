@@ -74,16 +74,15 @@
             @endforelse
         </div>
 
-        {{-- Bagian ini di luar mockup, boleh dihapus kalau tidak dipakai --}}
         @if ($jadwal->isNotEmpty())
             <div class="mt-10">
                 <h2 class="text-xl font-semibold text-gray-800">Jadwal Pengangkutan Kamu</h2>
-                <p class="text-sm text-gray-500">Permintaan yang sudah kamu terima</p>
+                <p class="text-sm text-gray-500">Permintaan yang sudah kamu terima — tandai selesai setelah sampahnya diangkut</p>
             </div>
 
             <div class="mt-4 space-y-3">
                 @foreach ($jadwal as $item)
-                    <div class="flex items-center justify-between rounded-2xl bg-white p-5 shadow-sm">
+                    <div class="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
                         <div class="flex items-center gap-4">
                             <x-avatar :name="$item->user->name" :src="$item->user->avatarUrl()" size="h-10 w-10 text-sm" />
                             <div>
@@ -91,13 +90,25 @@
                                 <p class="text-sm text-gray-500">{{ $item->banjar->name }}</p>
                             </div>
                         </div>
-                        <div class="text-right text-sm">
-                            <p class="font-medium text-gray-700">
-                                {{ $item->scheduled_date?->locale('id')->translatedFormat('l, d M Y') }}
-                            </p>
-                            <p class="text-gray-500">
-                                {{ $timeSlots[$item->scheduled_time_slot] ?? $item->scheduled_time_slot }}
-                            </p>
+
+                        <div class="flex items-center gap-4 sm:justify-end">
+                            <div class="text-sm sm:text-right">
+                                <p class="font-medium text-gray-700">
+                                    {{ $item->scheduled_date?->locale('id')->translatedFormat('l, d M Y') }}
+                                </p>
+                                <p class="text-gray-500">
+                                    {{ $timeSlots[$item->scheduled_time_slot] ?? $item->scheduled_time_slot }}
+                                </p>
+                            </div>
+
+                            <form method="POST" action="{{ route('pengangkut.complete', $item) }}" class="shrink-0">
+                                @csrf
+                                @method('PATCH')
+                                <button type="submit"
+                                    class="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-brand-700">
+                                    Selesai
+                                </button>
+                            </form>
                         </div>
                     </div>
                 @endforeach

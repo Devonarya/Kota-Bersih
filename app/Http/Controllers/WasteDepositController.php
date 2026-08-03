@@ -33,23 +33,58 @@ class WasteDepositController extends Controller
         ]);
     }
 
+    /**
+     * Halaman pengambilan: kalau ada permintaan yang masih berjalan tampilkan
+     * status tiketnya, kalau tidak ada tampilkan form pengajuan.
+     */
+    public function pengambilan(Request $request): View
+    {
+        $aktif = $request->user()->wasteDeposits()
+            ->whereIn('status', ['pending', 'diterima'])
+            ->with('banjar')
+            ->orderByDesc('id')
+            ->first();
+
+        return view('pengambilan.index', [
+            'aktif' => $aktif,
+        ]);
+    }
+
     public function store(Request $request): RedirectResponse
     {
+        $user = $request->user();
+
+        if (! $user->banjar_id) {
+            return redirect()->route('pengambilan.index')
+                ->with('status', 'Lengkapi banjar di profil dulu sebelum mengajukan pengambilan.');
+        }
+
+        $sudahAda = $user->wasteDeposits()
+            ->whereIn('status', ['pending', 'diterima'])
+            ->exists();
+
+        if ($sudahAda) {
+            return redirect()->route('pengambilan.index')
+                ->with('status', 'Masih ada permintaan yang berjalan. Tunggu sampai selesai dulu.');
+        }
+
         $validated = $request->validate([
             'jenis_sampah' => ['required', 'in:organik,plastik,kertas,b3'],
+            'scheduled_time_slot' => ['required', 'in:pagi,siang,sore'],
             'keterangan' => ['nullable', 'string', 'max:500'],
-            'berat_kg' => ['nullable', 'numeric', 'min:0'],
         ]);
 
-        $request->user()->wasteDeposits()->create([
-            'banjar_id' => $request->user()->banjar_id,
+        $user->wasteDeposits()->create([
+            'banjar_id' => $user->banjar_id,
             'jenis_sampah' => $validated['jenis_sampah'],
             'keterangan' => $validated['keterangan'] ?? null,
-            'berat_kg' => $validated['berat_kg'] ?? null,
             'status' => 'pending',
+            'scheduled_date' => now()->toDateString(),
+            'scheduled_time_slot' => $validated['scheduled_time_slot'],
             'deposited_on' => now()->toDateString(),
         ]);
 
-        return redirect()->route('sampah.index')->with('status', 'Setoran sampah berhasil dicatat.');
+        return redirect()->route('pengambilan.index')
+            ->with('status', 'Permintaan pengambilan berhasil diajukan.');
     }
 }

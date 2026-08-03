@@ -22,6 +22,22 @@ class WasteDeposit extends Model
     }
 
     /**
+     * Nomor tiket dari inisial banjar + id, contoh: Banjar Kertha Wangi #105 -> BKW-0105.
+     */
+    public function ticketCode(): string
+    {
+        $kata = preg_split('/\s+/', trim((string) $this->banjar?->name)) ?: [];
+
+        $inisial = collect($kata)
+            ->filter()
+            ->take(3)
+            ->map(fn (string $k) => mb_strtoupper(mb_substr($k, 0, 1)))
+            ->implode('');
+
+        return ($inisial ?: 'KB').'-'.str_pad((string) $this->id, 4, '0', STR_PAD_LEFT);
+    }
+
+    /**
      * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
