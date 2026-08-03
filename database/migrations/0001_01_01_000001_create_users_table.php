@@ -17,6 +17,25 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+
+            // Sengaja string, bukan enum: mengubah daftar nilai enum di SQLite
+            // butuh membangun ulang tabel. Nilai yang dipakai: warga, pengangkut, admin.
+            $table->string('role')->default('warga');
+
+            // Status persetujuan pendaftaran oleh admin: menunggu, disetujui, ditolak.
+            // review_note menyimpan alasan penolakan yang ditulis admin.
+            $table->string('membership_status', 20)->default('menunggu');
+            $table->string('review_note')->nullable();
+            $table->timestamp('reviewed_at')->nullable();
+
+            $table->foreignId('banjar_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
+
+            // Hanya diisi pengangkut; warga tidak diminta nomor KTP.
+            $table->string('ktp_number', 16)->nullable();
+
+            $table->string('avatar_path')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

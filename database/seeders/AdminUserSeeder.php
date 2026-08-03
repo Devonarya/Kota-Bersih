@@ -22,6 +22,10 @@ class AdminUserSeeder extends Seeder
                 'name' => 'Admin Utama',
                 'password' => Hash::make('admin12345'),
                 'role' => 'admin',
+                // Admin tidak lewat alur persetujuan, jadi langsung ditandai disetujui
+                // supaya tidak ikut terhitung sebagai pendaftar yang menunggu.
+                'membership_status' => 'disetujui',
+                'reviewed_at' => now(),
             ],
         );
 

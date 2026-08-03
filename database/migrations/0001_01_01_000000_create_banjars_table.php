@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Banjar dibuat paling awal karena users, waste_deposits, dan news
+     * semuanya menyimpan foreign key ke tabel ini.
      */
     public function up(): void
     {
@@ -16,6 +17,10 @@ return new class extends Migration
             $table->string('name');
             $table->string('desa')->nullable();
             $table->text('description')->nullable();
+
+            // Logo dipakai bersama seluruh anggota banjar, bukan milik satu pendaftar.
+            $table->string('logo_path')->nullable();
+
             $table->unsignedInteger('family_count')->default(0);
             $table->timestamps();
         });

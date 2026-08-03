@@ -29,8 +29,23 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            // Default kolomnya 'menunggu'. Untuk pengujian yang dibutuhkan hampir selalu
+            // anggota yang sudah aktif, jadi status disetujui dipakai sebagai bawaan.
+            'membership_status' => 'disetujui',
+            'reviewed_at' => now(),
             'remember_token' => Str::random(10),
         ];
+    }
+
+    /**
+     * Pendaftar yang belum ditinjau admin.
+     */
+    public function menunggu(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'membership_status' => 'menunggu',
+            'reviewed_at' => null,
+        ]);
     }
 
     /**
