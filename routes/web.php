@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\BanjarController as AdminBanjarController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberRequestController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BanjarController;
@@ -43,6 +44,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/warga', [MemberController::class, 'warga'])->name('warga.index');
         Route::get('/pengangkut', [MemberController::class, 'pengangkut'])->name('pengangkut.index');
 
+        Route::get('/berita', [AdminNewsController::class, 'index'])->name('berita.index');
+        Route::patch('/berita/{news}/turunkan', [AdminNewsController::class, 'demote'])->name('berita.demote');
+        Route::delete('/berita/{news}', [AdminNewsController::class, 'destroy'])->name('berita.destroy');
+
         Route::get('/banjar', [AdminBanjarController::class, 'index'])->name('banjar.index');
         Route::patch('/banjar/{banjar}', [AdminBanjarController::class, 'update'])->name('banjar.update');
         Route::delete('/banjar/{banjar}', [AdminBanjarController::class, 'destroy'])->name('banjar.destroy');
@@ -71,7 +76,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/news', [NewsController::class, 'index'])->name('news.index');
 
     Route::middleware('role:warga,pengangkut')->group(function () {
+        Route::get('/news/saya', [NewsController::class, 'mine'])->name('news.mine');
         Route::get('/news/create', [NewsController::class, 'create'])->name('news.create');
         Route::post('/news', [NewsController::class, 'store'])->name('news.store');
+        Route::delete('/news/{news}', [NewsController::class, 'destroy'])->name('news.destroy');
     });
+
+    // Mengubah tulisan boleh oleh penulisnya sendiri maupun admin, jadi di luar
+    // grup peran di atas — pengecekannya ada di controller.
+    Route::get('/news/{news}/edit', [NewsController::class, 'edit'])->whereNumber('news')->name('news.edit');
+    Route::patch('/news/{news}', [NewsController::class, 'update'])->whereNumber('news')->name('news.update');
 });

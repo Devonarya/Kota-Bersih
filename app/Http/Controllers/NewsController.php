@@ -6,6 +6,7 @@ use App\Models\News;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class NewsController extends Controller
@@ -80,7 +81,104 @@ class NewsController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
+        $validated = $this->validasi($request);
+
+        $request->user()->news()->create([
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'content' => $validated['content'],
+            'cover_image_path' => $request->file('cover_image')?->store('news', 'public'),
+            'status' => $validated['action'] === 'publish' ? 'published' : 'draft',
+            'published_at' => $validated['published_at'],
+        ]);
+
+        return redirect()->route('news.mine')->with('status', $validated['action'] === 'publish'
+            ? 'Berita berhasil dipublikasikan.'
+            : 'Berita berhasil disimpan sebagai draf.');
+    }
+
+    /**
+     * Daftar tulisan milik pengguna sendiri, termasuk yang masih draf.
+     */
+    public function mine(Request $request): View
+    {
+        return view('news.mine', [
+            'tulisan' => $request->user()->news()
+                ->orderByDesc('published_at')
+                ->orderByDesc('id')
+                ->get(),
+            'categories' => self::CATEGORIES,
+        ]);
+    }
+
+    public function edit(News $news): View
+    {
+        $this->pastikanBolehKelola($news);
+
+        return view('news.edit', [
+            'news' => $news,
+            'categories' => self::CATEGORIES,
+        ]);
+    }
+
+    public function update(Request $request, News $news): RedirectResponse
+    {
+        $this->pastikanBolehKelola($news);
+
+        $validated = $this->validasi($request);
+
+        $sampulLama = $news->cover_image_path;
+        $gantiSampul = $request->hasFile('cover_image');
+
+        $news->update([
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'content' => $validated['content'],
+            'status' => $validated['action'] === 'publish' ? 'published' : 'draft',
+            'published_at' => $validated['published_at'],
+            ...$gantiSampul
+                ? ['cover_image_path' => $request->file('cover_image')->store('news', 'public')]
+                : [],
+        ]);
+
+        if ($gantiSampul && $sampulLama) {
+            Storage::disk('public')->delete($sampulLama);
+        }
+
+        // Admin mengelola dari halaman sendiri, penulis dari Tulisan Saya.
+        $tujuan = $request->user()->role === 'admin' ? 'admin.berita.index' : 'news.mine';
+
+        return redirect()->route($tujuan)->with('status', $validated['action'] === 'publish'
+            ? "\"{$news->title}\" berhasil diperbarui dan tayang."
+            : "\"{$news->title}\" disimpan sebagai draf.");
+    }
+
+    /**
+     * Hapus permanen. Hanya penulisnya sendiri — admin memakai halaman admin
+     * yang menurunkan tulisan jadi draf lebih dulu.
+     */
+    public function destroy(Request $request, News $news): RedirectResponse
+    {
+        abort_unless($request->user()->id === $news->user_id, 403);
+
+        $sampul = $news->cover_image_path;
+        $judul = $news->title;
+
+        $news->delete();
+
+        if ($sampul) {
+            Storage::disk('public')->delete($sampul);
+        }
+
+        return back()->with('status', "\"{$judul}\" berhasil dihapus.");
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function validasi(Request $request): array
+    {
+        return $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'category' => ['required', Rule::in(array_keys(self::CATEGORIES))],
             'published_at' => ['required', 'date'],
@@ -92,22 +190,15 @@ class NewsController extends Controller
             }],
             'action' => ['required', 'in:draft,publish'],
         ]);
+    }
 
-        $coverPath = $request->file('cover_image')?->store('news', 'public');
+    /**
+     * Tulisan hanya boleh diubah penulisnya sendiri atau admin.
+     */
+    private function pastikanBolehKelola(News $news): void
+    {
+        $user = request()->user();
 
-        $request->user()->news()->create([
-            'title' => $validated['title'],
-            'category' => $validated['category'],
-            'content' => $validated['content'],
-            'cover_image_path' => $coverPath,
-            'status' => $validated['action'] === 'publish' ? 'published' : 'draft',
-            'published_at' => $validated['published_at'],
-        ]);
-
-        $message = $validated['action'] === 'publish'
-            ? 'Berita berhasil dipublikasikan.'
-            : 'Berita berhasil disimpan sebagai draf.';
-
-        return redirect()->route('news.index')->with('status', $message);
+        abort_unless($user->id === $news->user_id || $user->role === 'admin', 403);
     }
 }

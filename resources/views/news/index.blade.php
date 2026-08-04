@@ -10,17 +10,10 @@
         ];
     @endphp
 
-    <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-        <div>
-            <h1 class="text-2xl font-semibold text-gray-800">Berita Terkini</h1>
-            <p class="text-sm text-gray-500">Informasi dan edukasi seputar pengeloaan sampah</p>
-        </div>
-
-        @if (in_array(auth()->user()->role, ['warga', 'pengangkut']))
-            <a href="{{ route('news.create') }}" class="rounded-xl bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-brand-700">
-                Tambah Berita
-            </a>
-        @endif
+    {{-- Menulis berita sekarang dilakukan dari halaman Tulisan Saya. --}}
+    <div>
+        <h1 class="text-2xl font-semibold text-gray-800">Berita Terkini</h1>
+        <p class="text-sm text-gray-500">Informasi dan edukasi seputar pengeloaan sampah</p>
     </div>
 
     @if (session('status'))

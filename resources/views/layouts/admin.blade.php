@@ -10,7 +10,7 @@
             ['label' => 'Banjar', 'icon' => 'banjar', 'route' => 'admin.banjar.index'],
         ],
         'Konten' => [
-            ['label' => 'Pengumuman & Berita', 'icon' => 'konten'],
+            ['label' => 'Pengumuman & Berita', 'icon' => 'konten', 'route' => 'admin.berita.index'],
         ],
     ];
 

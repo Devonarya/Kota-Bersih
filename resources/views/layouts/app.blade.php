@@ -1,13 +1,16 @@
 @php
     $user = auth()->user();
 
-    // Menu datar tanpa pengelompokan — item yang khusus satu peran diberi kunci 'peran'.
+    // Menu datar tanpa pengelompokan. 'peran' membatasi item ke peran tertentu,
+    // 'aktif' boleh berisi beberapa nama route yang menyalakan item yang sama.
     $menu = [
         ['label' => 'Beranda', 'icon' => 'dashboard', 'route' => 'dashboard', 'aktif' => 'dashboard'],
         ['label' => 'Banjar', 'icon' => 'banjar', 'route' => 'banjar.index', 'aktif' => 'banjar.*'],
         ['label' => 'Pengambilan', 'icon' => 'pengambilan', 'route' => 'pengambilan.index', 'aktif' => 'pengambilan.*', 'peran' => 'warga'],
         ['label' => 'Riwayat', 'icon' => 'riwayat', 'route' => 'sampah.index', 'aktif' => 'sampah.*', 'peran' => 'warga'],
-        ['label' => 'News', 'icon' => 'konten', 'route' => 'news.index', 'aktif' => 'news.*'],
+        ['label' => 'News', 'icon' => 'konten', 'route' => 'news.index', 'aktif' => ['news.index', 'news.show']],
+        ['label' => 'Tulisan Saya', 'icon' => 'tulisan', 'route' => 'news.mine',
+            'aktif' => ['news.mine', 'news.create', 'news.edit'], 'peran' => ['warga', 'pengangkut']],
         ['label' => 'Pengangkut', 'icon' => 'pengangkut', 'route' => 'pengangkut.index', 'aktif' => 'pengangkut.*', 'peran' => 'pengangkut'],
     ];
 
@@ -39,10 +42,10 @@
 
             <div class="flex items-center gap-1 md:block">
                 @foreach ($menu as $item)
-                    @continue(isset($item['peran']) && $user->role !== $item['peran'])
+                    @continue(isset($item['peran']) && ! in_array($user->role, (array) $item['peran'], true))
 
                     <a href="{{ route($item['route']) }}"
-                        class="{{ $navItem }} mb-0.5 {{ request()->routeIs($item['aktif'])
+                        class="{{ $navItem }} mb-0.5 {{ request()->routeIs(...(array) $item['aktif'])
                             ? 'bg-leaf-100 font-semibold text-leaf-700'
                             : 'text-ink-soft hover:bg-paper' }}">
                         @include('partials.icon', ['name' => $item['icon']])

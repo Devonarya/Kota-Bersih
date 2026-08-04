@@ -61,7 +61,7 @@
             <div>
                 <div class="text-[13.5px] font-semibold text-ink">{{ $news->author->name }}</div>
                 <div class="mt-0.5 font-mono text-[11.5px] text-ink-faint">
-                    {{ $news->published_at?->translatedFormat('j M Y') ?? 'Belum terbit' }}
+                    {{ $news->published_at?->locale('id')->translatedFormat('j M Y') ?? 'Belum terbit' }}
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                             </span>
                             <div class="text-[13.5px] font-semibold leading-[1.4] text-ink">{{ $item->title }}</div>
                             <div class="mt-1 font-mono text-[11px] text-ink-faint">
-                                {{ $item->published_at?->translatedFormat('j M Y') ?? '—' }}
+                                {{ $item->published_at?->locale('id')->translatedFormat('j M Y') ?? '—' }}
                             </div>
                         </div>
                     </a>
