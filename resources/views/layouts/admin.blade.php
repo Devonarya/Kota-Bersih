@@ -49,10 +49,7 @@
                     class="{{ $navItem }} mb-0.5 {{ request()->routeIs('admin.dashboard')
                         ? 'bg-leaf-100 font-semibold text-leaf-700'
                         : 'text-ink-soft hover:bg-paper' }}">
-                    <svg class="h-[17px] w-[17px] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="3" width="7" height="9" rx="1.5" /><rect x="14" y="3" width="7" height="5" rx="1.5" />
-                        <rect x="14" y="12" width="7" height="9" rx="1.5" /><rect x="3" y="16" width="7" height="5" rx="1.5" />
-                    </svg>
+                    @include('partials.icon', ['name' => 'dashboard'])
                     <span class="hidden md:inline">Dashboard</span>
                 </a>
             </div>
@@ -67,13 +64,13 @@
                                 class="{{ $navItem }} mb-0.5 {{ request()->routeIs($item['route'])
                                     ? 'bg-leaf-100 font-semibold text-leaf-700'
                                     : 'text-ink-soft hover:bg-paper' }}">
-                                @include('admin.partials.icon', ['name' => $item['icon']])
+                                @include('partials.icon', ['name' => $item['icon']])
                                 <span class="hidden md:inline">{{ $item['label'] }}</span>
                             </a>
                         @else
                             <span title="Belum tersedia"
                                 class="{{ $navItem }} mb-0.5 cursor-not-allowed text-ink-soft opacity-60">
-                                @include('admin.partials.icon', ['name' => $item['icon']])
+                                @include('partials.icon', ['name' => $item['icon']])
                                 <span class="hidden md:inline">{{ $item['label'] }}</span>
                             </span>
                         @endif

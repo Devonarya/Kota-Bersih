@@ -1,3 +1,6 @@
+@extends('layouts.public')
+
+@section('content')
 @php
     $kategoriGaya = [
         'daur_ulang' => ['label' => 'Daur Ulang', 'thumb' => 'bg-leaf-100 text-leaf-700', 'tag' => 'bg-leaf-100 text-leaf-700'],
@@ -6,47 +9,6 @@
         'pengumuman' => ['label' => 'Pengumuman', 'thumb' => 'bg-gold-100 text-gold-600', 'tag' => 'bg-gold-100 text-gold-600'],
     ];
 @endphp
-
-<!DOCTYPE html>
-<html lang="id" class="scroll-smooth">
-<head>
-    @include('partials.head', ['title' => 'KotaBersih — Bersama Jaga Kebersihan Banjar'])
-</head>
-<body class="bg-paper font-body text-ink antialiased">
-
-    {{-- ============================ NAV ============================ --}}
-    <nav class="border-b border-line">
-        <div class="mx-auto flex max-w-5xl items-center justify-between gap-6 px-8 py-5">
-            <a href="{{ route('landing') }}" class="flex items-center gap-2.5">
-                <x-logo size="h-9 w-9" />
-                <span class="font-display text-lg font-semibold text-leaf-900">KotaBersih</span>
-            </a>
-
-            <div class="hidden gap-7 text-sm font-medium text-ink-soft md:flex">
-                <a href="#tentang" class="hover:text-leaf-700">Tentang</a>
-                <a href="#pengumuman" class="hover:text-leaf-700">Pengumuman</a>
-                <a href="#berita" class="hover:text-leaf-700">Berita</a>
-            </div>
-
-            <div class="flex items-center gap-2.5">
-                @auth
-                    <a href="{{ route('dashboard') }}"
-                        class="inline-flex items-center rounded-[10px] bg-leaf-700 px-4 py-2.5 text-[13px] font-semibold text-white hover:bg-leaf-900">
-                        Ke Dashboard
-                    </a>
-                @else
-                    <a href="{{ route('login') }}"
-                        class="inline-flex items-center rounded-[10px] border-[1.5px] border-leaf-700 px-4 py-2 text-[13px] font-semibold text-leaf-700 hover:bg-leaf-100">
-                        Masuk
-                    </a>
-                    <a href="{{ route('register') }}"
-                        class="inline-flex items-center rounded-[10px] bg-leaf-700 px-4 py-2.5 text-[13px] font-semibold text-white hover:bg-leaf-900">
-                        Daftar Anggota
-                    </a>
-                @endauth
-            </div>
-        </div>
-    </nav>
 
     <div class="mx-auto max-w-5xl px-8">
 
@@ -150,7 +112,8 @@
                     <div class="flex flex-col gap-2.5">
                         @forelse ($pengumuman as $item)
                             @php $gaya = $kategoriGaya[$item->category] @endphp
-                            <article class="flex items-center gap-3.5 rounded-[14px] border border-line bg-white px-4 py-3.5">
+                            <a href="{{ route('news.show', $item) }}"
+                                class="flex items-center gap-3.5 rounded-[14px] border border-line bg-white px-4 py-3.5 hover:border-leaf-600">
                                 <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[10px] {{ $gaya['thumb'] }}">
                                     <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -166,7 +129,7 @@
                                         {{ $item->published_at?->format('d M Y') ?? '—' }}
                                     </div>
                                 </div>
-                            </article>
+                            </a>
                         @empty
                             <p class="rounded-[14px] border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-faint">
                                 Belum ada pengumuman.
@@ -185,7 +148,8 @@
                     <div class="flex flex-col gap-2.5">
                         @forelse ($berita as $item)
                             @php $gaya = $kategoriGaya[$item->category] @endphp
-                            <article class="flex items-center gap-3.5 rounded-[14px] border border-line bg-white px-4 py-3.5">
+                            <a href="{{ route('news.show', $item) }}"
+                                class="flex items-center gap-3.5 rounded-[14px] border border-line bg-white px-4 py-3.5 hover:border-leaf-600">
                                 <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[10px] {{ $gaya['thumb'] }}">
                                     @if ($item->category === 'daur_ulang')
                                         <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -212,7 +176,7 @@
                                         {{ $item->published_at?->format('d M Y') ?? '—' }}
                                     </div>
                                 </div>
-                            </article>
+                            </a>
                         @empty
                             <p class="rounded-[14px] border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-faint">
                                 Belum ada berita.
@@ -225,14 +189,4 @@
         </section>
 
     </div>
-
-    {{-- ============================ FOOTER ============================ --}}
-    <footer class="border-t border-line py-[26px]">
-        <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-2.5 px-8">
-            <span class="font-mono text-xs text-ink-faint">© {{ now()->year }} KotaBersih</span>
-            <span class="text-xs text-ink-faint">Dibangun untuk warga dan pengangkut sampah, mulai dari banjar.</span>
-        </div>
-    </footer>
-
-</body>
-</html>
+@endsection

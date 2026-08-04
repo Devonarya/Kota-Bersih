@@ -27,6 +27,7 @@ class LandingController extends Controller
             ->get();
 
         return view('landing', [
+            'title' => 'KotaBersih — Bersama Jaga Kebersihan Banjar',
             'pengumuman' => $pengumuman,
             'berita' => $berita,
             'jumlahWarga' => User::where('role', 'warga')->count(),

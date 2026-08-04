@@ -15,6 +15,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
+// Detail berita bisa dibaca tanpa login supaya kartu di landing bisa dibuka tamu.
+// Dibatasi angka agar tidak menyerobot /news/create yang ada di grup auth.
+Route::get('/news/{news}', [NewsController::class, 'show'])->whereNumber('news')->name('news.show');
+
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'create'])->name('login');
     Route::post('/login', [LoginController::class, 'store']);

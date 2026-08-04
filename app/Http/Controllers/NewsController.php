@@ -46,6 +46,31 @@ class NewsController extends Controller
         ]);
     }
 
+    public function show(News $news): View
+    {
+        // Draf hanya boleh dilihat penulisnya sendiri atau admin.
+        if ($news->status !== 'published') {
+            $user = request()->user();
+
+            abort_unless($user && ($user->id === $news->user_id || $user->role === 'admin'), 404);
+        }
+
+        $lainnya = News::where('status', 'published')
+            ->with('author')
+            ->whereKeyNot($news->id)
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit(4)
+            ->get();
+
+        return view('news.show', [
+            'title' => $news->title,
+            'news' => $news->load('author'),
+            'lainnya' => $lainnya,
+            'categories' => self::CATEGORIES,
+        ]);
+    }
+
     public function create(): View
     {
         return view('news.create', [

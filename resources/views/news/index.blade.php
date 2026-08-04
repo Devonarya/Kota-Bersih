@@ -28,7 +28,8 @@
     @endif
 
     @if ($featured)
-        <div class="mt-6 grid grid-cols-1 overflow-hidden rounded-2xl bg-white shadow-sm lg:grid-cols-2">
+        <a href="{{ route('news.show', $featured) }}"
+            class="mt-6 grid grid-cols-1 overflow-hidden rounded-2xl bg-white shadow-sm ring-brand-600 hover:ring-2 lg:grid-cols-2">
             @if ($featured->cover_image_path)
                 <img src="{{ \Illuminate\Support\Facades\Storage::url($featured->cover_image_path) }}" alt="" class="h-64 w-full object-cover lg:h-full">
             @else
@@ -47,7 +48,7 @@
                     <span class="text-gray-700">{{ $featured->author->name }}</span>
                 </div>
             </div>
-        </div>
+        </a>
     @else
         <div class="mt-6 rounded-2xl bg-white p-10 text-center text-gray-400 shadow-sm">Belum ada berita yang dipublikasikan.</div>
     @endif
@@ -67,7 +68,8 @@
 
     <div class="mt-4 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         @forelse ($others as $article)
-            <div class="overflow-hidden rounded-2xl bg-white shadow-sm">
+            <a href="{{ route('news.show', $article) }}"
+                class="overflow-hidden rounded-2xl bg-white shadow-sm ring-brand-600 hover:ring-2">
                 @if ($article->cover_image_path)
                     <img src="{{ \Illuminate\Support\Facades\Storage::url($article->cover_image_path) }}" alt="" class="h-40 w-full object-cover">
                 @else
@@ -81,7 +83,7 @@
                     <p class="mt-2 font-medium text-gray-800">{{ $article->title }}</p>
                     <p class="mt-1 text-sm text-gray-500">{{ \Illuminate\Support\Str::limit(strip_tags($article->content), 90) }}</p>
                 </div>
-            </div>
+            </a>
         @empty
             @if ($featured)
                 <p class="text-gray-400 sm:col-span-2 lg:col-span-3">Tidak ada berita lain untuk kategori ini.</p>
