@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\Admin\BanjarController as AdminBanjarController;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberRequestController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -37,6 +39,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/permintaan', [MemberRequestController::class, 'index'])->name('permintaan.index');
         Route::patch('/permintaan/{user}/setujui', [MemberRequestController::class, 'approve'])->name('permintaan.approve');
         Route::patch('/permintaan/{user}/tolak', [MemberRequestController::class, 'reject'])->name('permintaan.reject');
+
+        Route::get('/warga', [MemberController::class, 'warga'])->name('warga.index');
+        Route::get('/pengangkut', [MemberController::class, 'pengangkut'])->name('pengangkut.index');
+
+        Route::get('/banjar', [AdminBanjarController::class, 'index'])->name('banjar.index');
+        Route::patch('/banjar/{banjar}', [AdminBanjarController::class, 'update'])->name('banjar.update');
+        Route::delete('/banjar/{banjar}', [AdminBanjarController::class, 'destroy'])->name('banjar.destroy');
     });
 
     Route::get('/profil', [ProfileController::class, 'edit'])->name('profil.edit');

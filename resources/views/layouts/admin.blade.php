@@ -3,17 +3,14 @@
     $menu = [
         'Keanggotaan' => [
             ['label' => 'Permintaan Anggota', 'icon' => 'permintaan', 'route' => 'admin.permintaan.index'],
-            ['label' => 'Warga', 'icon' => 'warga'],
-            ['label' => 'Pengangkut', 'icon' => 'pengangkut'],
+            ['label' => 'Warga', 'icon' => 'warga', 'route' => 'admin.warga.index'],
+            ['label' => 'Pengangkut', 'icon' => 'pengangkut', 'route' => 'admin.pengangkut.index'],
         ],
         'Operasional' => [
-            ['label' => 'Banjar', 'icon' => 'banjar'],
+            ['label' => 'Banjar', 'icon' => 'banjar', 'route' => 'admin.banjar.index'],
         ],
         'Konten' => [
             ['label' => 'Pengumuman & Berita', 'icon' => 'konten'],
-        ],
-        'Lainnya' => [
-            ['label' => 'Pengaturan', 'icon' => 'pengaturan'],
         ],
     ];
 
