@@ -18,7 +18,7 @@ class DashboardController extends Controller
             'setoranHariIni' => WasteDeposit::whereDate('deposited_on', today())->count(),
             'permintaanMenunggu' => WasteDeposit::where('status', 'pending')->count(),
 
-            'permintaanTerbaru' => WasteDeposit::with(['user', 'banjar'])
+            'permintaanTerbaru' => WasteDeposit::with(['user', 'banjar', 'types'])
                 ->orderByDesc('id')
                 ->limit(5)
                 ->get(),

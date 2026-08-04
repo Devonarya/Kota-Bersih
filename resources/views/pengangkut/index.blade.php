@@ -46,9 +46,9 @@
                             <p class="text-xl font-semibold text-gray-800">{{ $item->user->name }}</p>
                             <p class="text-sm text-gray-500">Wilayah: {{ $item->banjar->name }}</p>
                             <p class="mt-1 text-sm text-gray-600">
-                                {{ $jenisLabels[$item->jenis_sampah] ?? $item->jenis_sampah }}
-                                @if ($item->keterangan)
-                                    &middot; {{ $item->keterangan }}
+                                {{ $item->types->pluck('jenis_sampah')->map(fn ($jenis) => $jenisLabels[$jenis] ?? $jenis)->implode(', ') }}
+                                @if ($item->detail_lokasi)
+                                    &middot; {{ $item->detail_lokasi }}
                                 @endif
                             </p>
                         </div>

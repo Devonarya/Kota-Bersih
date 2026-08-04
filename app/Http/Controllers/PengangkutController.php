@@ -24,12 +24,12 @@ class PengangkutController extends Controller
         $user = $request->user();
 
         return view('pengangkut.index', [
-            'requests' => WasteDeposit::with(['user', 'banjar'])
+            'requests' => WasteDeposit::with(['user', 'banjar', 'types'])
                 ->where('status', 'pending')
                 ->where('banjar_id', $user->banjar_id)
                 ->orderBy('created_at')
                 ->get(),
-            'jadwal' => WasteDeposit::with(['user', 'banjar'])
+            'jadwal' => WasteDeposit::with(['user', 'banjar', 'types'])
                 ->where('status', 'diterima')
                 ->where('pengangkut_id', $user->id)
                 ->orderBy('scheduled_date')

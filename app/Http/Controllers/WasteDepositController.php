@@ -7,6 +7,7 @@ use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
 
 class WasteDepositController extends Controller
 {
@@ -20,8 +21,10 @@ class WasteDepositController extends Controller
         $period = Carbon::createFromFormat('Y-m', $month)->startOfMonth();
 
         $deposits = $user->wasteDeposits()
+            ->with('types')
             ->whereBetween('deposited_on', [$period->copy()->startOfMonth(), $period->copy()->endOfMonth()])
-            ->when($jenis !== 'semua', fn ($query) => $query->where('jenis_sampah', $jenis))
+            ->when($jenis !== 'semua', fn ($query) => $query
+                ->whereHas('types', fn ($tipe) => $tipe->where('jenis_sampah', $jenis)))
             ->orderByDesc('deposited_on')
             ->get();
 
@@ -41,7 +44,7 @@ class WasteDepositController extends Controller
     {
         $aktif = $request->user()->wasteDeposits()
             ->whereIn('status', ['pending', 'diterima'])
-            ->with('banjar')
+            ->with(['banjar', 'types'])
             ->orderByDesc('id')
             ->first();
 
@@ -69,20 +72,27 @@ class WasteDepositController extends Controller
         }
 
         $validated = $request->validate([
-            'jenis_sampah' => ['required', 'in:organik,plastik,kertas,b3'],
+            'jenis_sampah' => ['required', 'array', 'min:1'],
+            'jenis_sampah.*' => ['distinct', Rule::in(['organik', 'plastik', 'kertas', 'b3'])],
             'scheduled_time_slot' => ['required', 'in:pagi,siang,sore'],
-            'keterangan' => ['nullable', 'string', 'max:500'],
+            'detail_lokasi' => ['nullable', 'string', 'max:500'],
+        ], [
+            'jenis_sampah.required' => 'Pilih minimal satu jenis sampah.',
+            'jenis_sampah.min' => 'Pilih minimal satu jenis sampah.',
         ]);
 
-        $user->wasteDeposits()->create([
+        $deposit = $user->wasteDeposits()->create([
             'banjar_id' => $user->banjar_id,
-            'jenis_sampah' => $validated['jenis_sampah'],
-            'keterangan' => $validated['keterangan'] ?? null,
+            'detail_lokasi' => $validated['detail_lokasi'] ?? null,
             'status' => 'pending',
             'scheduled_date' => now()->toDateString(),
             'scheduled_time_slot' => $validated['scheduled_time_slot'],
             'deposited_on' => now()->toDateString(),
         ]);
+
+        $deposit->types()->createMany(
+            collect($validated['jenis_sampah'])->map(fn (string $jenis) => ['jenis_sampah' => $jenis])->all()
+        );
 
         return redirect()->route('pengambilan.index')
             ->with('status', 'Permintaan pengambilan berhasil diajukan.');

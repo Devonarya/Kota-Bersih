@@ -52,7 +52,7 @@
                 <tr>
                     <th class="px-6 py-3 font-medium">Hari / Tanggal</th>
                     <th class="px-6 py-3 font-medium">Jenis Sampah</th>
-                    <th class="px-6 py-3 font-medium">Keterangan</th>
+                    <th class="px-6 py-3 font-medium">Detail Lokasi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-100">
@@ -60,11 +60,15 @@
                     <tr>
                         <td class="px-6 py-4 text-gray-700">{{ $deposit->deposited_on->locale('id')->translatedFormat('l, d M Y') }}</td>
                         <td class="px-6 py-4">
-                            <span class="rounded-full px-3 py-1 text-xs font-medium {{ $jenisColors[$deposit->jenis_sampah] }}">
-                                {{ $jenisLabels[$deposit->jenis_sampah] }}
-                            </span>
+                            <div class="flex flex-wrap gap-1.5">
+                                @foreach ($deposit->types as $tipe)
+                                    <span class="rounded-full px-3 py-1 text-xs font-medium {{ $jenisColors[$tipe->jenis_sampah] ?? '' }}">
+                                        {{ $jenisLabels[$tipe->jenis_sampah] ?? $tipe->jenis_sampah }}
+                                    </span>
+                                @endforeach
+                            </div>
                         </td>
-                        <td class="px-6 py-4 text-gray-500">{{ $deposit->keterangan ?: '-' }}</td>
+                        <td class="px-6 py-4 text-gray-500">{{ $deposit->detail_lokasi ?: '-' }}</td>
                     </tr>
                 @empty
                     <tr>

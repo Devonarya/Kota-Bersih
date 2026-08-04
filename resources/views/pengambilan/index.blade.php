@@ -99,9 +99,13 @@
                 <div class="mb-1.5 grid grid-cols-1 gap-x-3.5 gap-y-4 sm:grid-cols-2">
                     <div class="sm:col-span-2">
                         <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Jenis Sampah</div>
-                        <span class="inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $jenisWarna[$aktif->jenis_sampah] }}">
-                            {{ $jenisOpsi[$aktif->jenis_sampah]['label'] }}
-                        </span>
+                        <div class="flex flex-wrap gap-1.5">
+                            @foreach ($aktif->types as $tipe)
+                                <span class="inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $jenisWarna[$tipe->jenis_sampah] ?? '' }}">
+                                    {{ $jenisOpsi[$tipe->jenis_sampah]['label'] ?? $tipe->jenis_sampah }}
+                                </span>
+                            @endforeach
+                        </div>
                     </div>
 
                     <div>
@@ -128,10 +132,10 @@
                         <div class="text-[13.5px] text-ink">{{ $user->address ?: 'Alamat belum diisi di profil' }}</div>
                     </div>
 
-                    @if ($aktif->keterangan)
+                    @if ($aktif->detail_lokasi)
                         <div class="sm:col-span-2">
-                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Catatan</div>
-                            <div class="text-[13.5px] text-ink">{{ $aktif->keterangan }}</div>
+                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Detail Lokasi</div>
+                            <div class="text-[13.5px] text-ink">{{ $aktif->detail_lokasi }}</div>
                         </div>
                     @endif
                 </div>
@@ -142,17 +146,20 @@
 
             {{-- ================= BELUM ADA PERMINTAAN ================= --}}
             <form method="POST" action="{{ route('pengambilan.store') }}"
-                x-data="{ jenis: '{{ old('jenis_sampah', 'organik') }}', waktu: '{{ old('scheduled_time_slot', 'pagi') }}' }"
+                x-data="{ jenis: @js(old('jenis_sampah', ['organik'])), waktu: '{{ old('scheduled_time_slot', 'pagi') }}' }"
                 class="mt-[18px] rounded-[14px] border border-line bg-white px-6 pb-[26px] pt-6">
                 @csrf
 
                 <div class="mb-5">
-                    <label class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">Jenis Sampah</label>
+                    <label class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">
+                        Jenis Sampah <span class="font-normal text-ink-faint">(bisa pilih lebih dari satu)</span>
+                    </label>
 
                     <div class="flex flex-wrap gap-2.5">
                         @foreach ($jenisOpsi as $nilai => $opsi)
-                            <button type="button" @click="jenis = '{{ $nilai }}'"
-                                :class="jenis === '{{ $nilai }}'
+                            <button type="button"
+                                @click="jenis.includes('{{ $nilai }}') ? jenis = jenis.filter(j => j !== '{{ $nilai }}') : jenis.push('{{ $nilai }}')"
+                                :class="jenis.includes('{{ $nilai }}')
                                     ? 'bg-leaf-100 border-leaf-100 text-leaf-700'
                                     : 'bg-white border-line text-ink-soft hover:border-leaf-600'"
                                 class="flex items-center gap-2 rounded-xl border px-4 py-2.5 text-[13.5px] font-semibold transition">
@@ -163,7 +170,9 @@
                         @endforeach
                     </div>
 
-                    <input type="hidden" name="jenis_sampah" :value="jenis">
+                    <template x-for="nilai in jenis" :key="nilai">
+                        <input type="hidden" name="jenis_sampah[]" :value="nilai">
+                    </template>
 
                     @error('jenis_sampah')
                         <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
@@ -213,13 +222,13 @@
                 </div>
 
                 <div>
-                    <label for="keterangan" class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">
-                        Catatan Tambahan (opsional)
+                    <label for="detail_lokasi" class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">
+                        Detail Lokasi (opsional)
                     </label>
-                    <textarea id="keterangan" name="keterangan" rows="3"
-                        placeholder="Info lain buat pengangkut, kalau ada"
-                        class="{{ $inputKelas }} min-h-[70px] resize-y">{{ old('keterangan') }}</textarea>
-                    @error('keterangan')
+                    <textarea id="detail_lokasi" name="detail_lokasi" rows="3"
+                        placeholder="Contoh: Tempat sampah ada di samping pagar rumah"
+                        class="{{ $inputKelas }} min-h-[70px] resize-y">{{ old('detail_lokasi') }}</textarea>
+                    @error('detail_lokasi')
                         <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
                     @enderror
                 </div>

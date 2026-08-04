@@ -12,6 +12,9 @@ class WasteDepositSeeder extends Seeder
      * Setoran dummy untuk warga yang sudah disetujui. Sebagian sengaja dibiarkan
      * berstatus pending/diterima supaya halaman Pengangkut ada yang bisa diproses,
      * dan sebagian bertanggal hari ini supaya angka di dashboard admin tidak nol.
+     *
+     * Jenis sampah berupa daftar (array) supaya sekalian jadi contoh permintaan
+     * dengan lebih dari satu jenis sekaligus.
      */
     public function run(): void
     {
@@ -29,12 +32,41 @@ class WasteDepositSeeder extends Seeder
         }
 
         $contoh = [
-            ['jenis' => 'organik', 'berat' => 4.5, 'status' => 'selesai', 'hari' => 0],
-            ['jenis' => 'plastik', 'berat' => 2.25, 'status' => 'selesai', 'hari' => 0],
-            ['jenis' => 'kertas', 'berat' => 3.0, 'status' => 'diterima', 'hari' => 1],
-            ['jenis' => 'b3', 'berat' => 0.75, 'status' => 'pending', 'hari' => 2],
-            ['jenis' => 'organik', 'berat' => 5.2, 'status' => 'selesai', 'hari' => 6],
-            ['jenis' => 'plastik', 'berat' => 1.8, 'status' => 'ditolak', 'hari' => 9],
+            [
+                'jenis' => ['organik', 'plastik'],
+                'berat' => 4.5,
+                'status' => 'selesai',
+                'hari' => 0,
+                'lokasi' => 'Tempat sampah ada di samping pagar rumah.',
+            ],
+            [
+                'jenis' => ['kertas'],
+                'berat' => 3.0,
+                'status' => 'diterima',
+                'hari' => 1,
+                'lokasi' => null,
+            ],
+            [
+                'jenis' => ['b3'],
+                'berat' => 0.75,
+                'status' => 'pending',
+                'hari' => 2,
+                'lokasi' => 'Kardus kecil, dititip di teras depan.',
+            ],
+            [
+                'jenis' => ['organik'],
+                'berat' => 5.2,
+                'status' => 'selesai',
+                'hari' => 6,
+                'lokasi' => null,
+            ],
+            [
+                'jenis' => ['plastik', 'kertas'],
+                'berat' => 1.8,
+                'status' => 'ditolak',
+                'hari' => 9,
+                'lokasi' => null,
+            ],
         ];
 
         // Contoh di lapis luar supaya setoran terbaru tersebar ke beberapa warga,
@@ -49,19 +81,24 @@ class WasteDepositSeeder extends Seeder
                     ? $pengangkut->get($pemilik->banjar_id)
                     : null;
 
-                WasteDeposit::firstOrCreate([
+                $deposit = WasteDeposit::firstOrCreate([
                     'user_id' => $pemilik->id,
-                    'jenis_sampah' => $data['jenis'],
                     'deposited_on' => $tanggal->toDateString(),
                 ], [
                     'banjar_id' => $pemilik->banjar_id,
+                    'detail_lokasi' => $data['lokasi'],
                     'berat_kg' => $data['berat'],
                     'status' => $data['status'],
                     'pengangkut_id' => $penanggungJawab?->id,
                     'scheduled_date' => $tanggal->toDateString(),
                     'scheduled_time_slot' => $urutan % 2 === 0 ? '08:00 - 10:00' : '13:00 - 15:00',
-                    'keterangan' => null,
                 ]);
+
+                if ($deposit->wasRecentlyCreated) {
+                    $deposit->types()->createMany(
+                        collect($data['jenis'])->map(fn (string $jenis) => ['jenis_sampah' => $jenis])->all()
+                    );
+                }
             }
         }
     }

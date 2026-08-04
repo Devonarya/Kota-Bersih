@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'banjar_id', 'jenis_sampah', 'keterangan', 'berat_kg', 'status', 'pengangkut_id', 'scheduled_date', 'scheduled_time_slot', 'deposited_on'])]
+#[Fillable(['user_id', 'banjar_id', 'detail_lokasi', 'berat_kg', 'status', 'pengangkut_id', 'scheduled_date', 'scheduled_time_slot', 'deposited_on'])]
 class WasteDeposit extends Model
 {
     /**
@@ -59,5 +60,13 @@ class WasteDeposit extends Model
     public function pengangkut(): BelongsTo
     {
         return $this->belongsTo(User::class, 'pengangkut_id');
+    }
+
+    /**
+     * @return HasMany<WasteDepositType, $this>
+     */
+    public function types(): HasMany
+    {
+        return $this->hasMany(WasteDepositType::class);
     }
 }

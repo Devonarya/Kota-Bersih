@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('banjar_id')->constrained()->cascadeOnDelete();
-            $table->enum('jenis_sampah', ['organik', 'plastik', 'kertas', 'b3']);
-            $table->text('keterangan')->nullable();
+            $table->text('detail_lokasi')->nullable();
             $table->decimal('berat_kg', 8, 2)->nullable();
             $table->enum('status', ['pending', 'diterima', 'ditolak', 'selesai'])->default('selesai');
             $table->foreignId('pengangkut_id')->nullable()->constrained('users')->nullOnDelete();

@@ -62,7 +62,7 @@
                         <div class="min-w-0">
                             <div class="truncate text-[13.5px] font-semibold">{{ $permintaan->user?->name ?? 'Pengguna dihapus' }}</div>
                             <div class="mt-0.5 truncate text-[11.5px] text-ink-soft">
-                                {{ ucfirst($permintaan->jenis_sampah) }} · {{ $permintaan->banjar?->name ?? 'Tanpa banjar' }}
+                                {{ $permintaan->types->pluck('jenis_sampah')->map(fn ($jenis) => ucfirst($jenis))->implode(', ') }} · {{ $permintaan->banjar?->name ?? 'Tanpa banjar' }}
                             </div>
                         </div>
                     </div>
