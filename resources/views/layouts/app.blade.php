@@ -35,7 +35,7 @@
             <a href="{{ route('dashboard') }}" class="flex shrink-0 items-center gap-2.5 pr-3.5 md:px-2 md:pb-[22px] md:pr-2">
                 <x-logo size="h-[34px] w-[34px]" />
                 <div>
-                    <div class="font-display text-[17px] font-semibold leading-tight text-leaf-900">KotaBersih</div>
+                    <div class="font-display text-[17px] font-semibold leading-tight text-leaf-900">KotaBersih Berbudaya</div>
                     <div class="font-mono text-[9.5px] uppercase tracking-[0.06em] text-leaf-600">{{ $labelPeran }}</div>
                 </div>
             </a>

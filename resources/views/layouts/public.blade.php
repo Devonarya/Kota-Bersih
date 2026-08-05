@@ -16,7 +16,7 @@
         <div class="mx-auto flex max-w-5xl items-center justify-between gap-6 px-8 py-5">
             <a href="{{ route('landing') }}" class="flex items-center gap-2.5">
                 <x-logo size="h-9 w-9" />
-                <span class="font-display text-lg font-semibold text-leaf-900">KotaBersih</span>
+                <span class="font-display text-lg font-semibold text-leaf-900">KotaBersih Berbudaya</span>
             </a>
 
             <div class="hidden gap-7 text-sm font-medium text-ink-soft md:flex">
