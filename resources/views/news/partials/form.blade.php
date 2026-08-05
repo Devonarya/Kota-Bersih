@@ -18,9 +18,9 @@
 @endphp
 
 <div x-data="{ konfirmasiOpen: false }" class="mt-6 max-w-[760px]">
-    <form id="news-form" method="POST" enctype="multipart/form-data"
+    <x-card as="form" id="news-form" method="POST" enctype="multipart/form-data"
         action="{{ $news ? route('news.update', $news) : route('news.store') }}"
-        class="space-y-5 rounded-[14px] border border-line bg-white p-6">
+        class="space-y-5 p-6">
         @csrf
         @if ($news)
             @method('PATCH')
@@ -141,7 +141,7 @@
                 </div>
             </div>
         </div>
-    </form>
+    </x-card>
 </div>
 
 @push('styles')

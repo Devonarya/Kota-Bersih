@@ -38,18 +38,9 @@
                     $gaya = $gayaStatus[$item->status] ?? $gayaStatus['draft'];
                 @endphp
 
-                <div class="flex flex-wrap items-center justify-between gap-4 rounded-[14px] border border-line bg-white px-[18px] py-4">
+                <x-card class="flex flex-wrap items-center justify-between gap-4 px-[18px] py-4">
                     <div class="flex min-w-[240px] flex-1 items-center gap-3.5">
-                        @if ($item->cover_image_path)
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($item->cover_image_path) }}" alt=""
-                                class="h-[52px] w-[68px] shrink-0 rounded-[10px] border border-line object-cover">
-                        @else
-                            <div class="flex h-[52px] w-[68px] shrink-0 items-center justify-center rounded-[10px] bg-leaf-100 text-leaf-700">
-                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M4 4h16v16H4z" /><path d="m4 16 4-4 4 4 6-6" />
-                                </svg>
-                            </div>
-                        @endif
+                        <x-news-cover :news="$item" />
 
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
@@ -90,51 +81,43 @@
                             </svg>
                         </button>
                     </div>
-                </div>
+                </x-card>
             @empty
-                <div class="rounded-[14px] border border-line bg-white px-5 py-[60px] text-center">
+                <x-card class="px-5 py-[60px] text-center">
                     <p class="text-sm text-ink-faint">Kamu belum menulis berita apa pun.</p>
                     <a href="{{ route('news.create') }}"
                         class="mt-4 inline-block rounded-[10px] bg-leaf-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-leaf-900">
                         Tulis Berita Pertama
                     </a>
-                </div>
+                </x-card>
             @endforelse
         </div>
 
         {{-- ====================== Modal: hapus tulisan ====================== --}}
-        <div x-show="hapusOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-leaf-900/45 p-6">
-            <div @click.outside="hapusOpen = false" class="w-full max-w-[480px] rounded-2xl bg-white">
-                <div class="flex items-center justify-between border-b border-line px-[22px] py-5">
-                    <h3 class="font-display text-[17px] font-semibold text-leaf-900">Hapus Berita</h3>
-                    <button type="button" @click="hapusOpen = false"
-                        class="h-[30px] w-[30px] rounded-full bg-paper text-base leading-none text-ink-soft">&times;</button>
+        <x-modal state="hapusOpen" title="Hapus Berita">
+            <form method="POST" :action="item.aksi">
+                @csrf
+                @method('DELETE')
+
+                <div class="px-[22px] py-5">
+                    <p class="text-[13.5px] leading-relaxed text-ink-soft">
+                        Hapus <strong class="text-ink" x-text="item.judul"></strong>?
+                    </p>
+                    <p class="mt-3 text-xs text-ink-faint">Naskahnya ikut hilang dan tidak bisa dikembalikan.</p>
                 </div>
 
-                <form method="POST" :action="item.aksi">
-                    @csrf
-                    @method('DELETE')
-
-                    <div class="px-[22px] py-5">
-                        <p class="text-[13.5px] leading-relaxed text-ink-soft">
-                            Hapus <strong class="text-ink" x-text="item.judul"></strong>?
-                        </p>
-                        <p class="mt-3 text-xs text-ink-faint">Naskahnya ikut hilang dan tidak bisa dikembalikan.</p>
-                    </div>
-
-                    <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
-                        <button type="button" @click="hapusOpen = false"
-                            class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="flex-1 rounded-[10px] bg-clay-600 py-3 text-sm font-semibold text-white hover:opacity-90">
-                            Hapus Berita
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
+                    <button type="button" @click="hapusOpen = false"
+                        class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="flex-1 rounded-[10px] bg-clay-600 py-3 text-sm font-semibold text-white hover:opacity-90">
+                        Hapus Berita
+                    </button>
+                </div>
+            </form>
+        </x-modal>
 
     </div>
 

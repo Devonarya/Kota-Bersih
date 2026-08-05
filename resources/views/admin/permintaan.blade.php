@@ -11,8 +11,6 @@
 
     $tabStatus = ['semua' => 'Semua', 'menunggu' => 'Menunggu', 'disetujui' => 'Disetujui', 'ditolak' => 'Ditolak'];
     $chipPeran = ['semua' => 'Semua Peran', 'warga' => 'Warga', 'pengangkut' => 'Pengangkut'];
-
-    $kelasKartu = 'rounded-[14px] border border-line bg-white';
 @endphp
 
 @section('content')
@@ -90,16 +88,9 @@
                     ];
                 @endphp
 
-                <div class="{{ $kelasKartu }} flex flex-wrap items-center justify-between gap-4 px-[18px] py-4">
+                <x-card class="flex flex-wrap items-center justify-between gap-4 px-[18px] py-4">
                     <div class="flex min-w-[220px] items-center gap-3.5">
-                        @if ($anggota->avatarUrl())
-                            <img src="{{ $anggota->avatarUrl() }}" alt="{{ $anggota->name }}"
-                                class="h-[42px] w-[42px] shrink-0 rounded-full object-cover">
-                        @else
-                            <span class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-full bg-gold-100 font-display text-sm font-semibold text-gold-600">
-                                {{ $anggota->initials() }}
-                            </span>
-                        @endif
+                        <x-avatar :user="$anggota" size="h-[42px] w-[42px] text-sm" />
                         <div class="min-w-0">
                             <div class="text-[14.5px] font-semibold">{{ $anggota->name }}</div>
                             <div class="mt-0.5 text-[12.5px] text-ink-soft">
@@ -133,187 +124,98 @@
                             </button>
                         @endif
                     </div>
-                </div>
+                </x-card>
             @empty
-                <div class="{{ $kelasKartu }} px-5 py-[60px] text-center text-sm text-ink-faint">
+                <x-card class="px-5 py-[60px] text-center text-sm text-ink-faint">
                     Tidak ada permintaan yang cocok.
-                </div>
+                </x-card>
             @endforelse
         </div>
 
         {{-- ====================== Modal: detail permintaan ====================== --}}
-        <div x-show="detailOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-leaf-900/45 p-6">
-            <div @click.outside="detailOpen = false"
-                class="max-h-[88vh] w-full max-w-[480px] overflow-y-auto rounded-2xl bg-white">
-                <div class="flex items-center justify-between border-b border-line px-[22px] py-5">
-                    <h3 class="font-display text-[17px] font-semibold text-leaf-900">Detail Permintaan</h3>
-                    <button type="button" @click="detailOpen = false"
-                        class="h-[30px] w-[30px] rounded-full bg-paper text-base leading-none text-ink-soft">&times;</button>
-                </div>
-
-                <div class="px-[22px] py-5">
-                    <div class="grid grid-cols-1 gap-x-4 gap-y-3.5 sm:grid-cols-2">
-                        <div>
-                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Nama Lengkap</div>
-                            <div class="text-sm" x-text="item.nama"></div>
-                        </div>
-                        <div>
-                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Peran</div>
-                            <div class="text-sm" x-text="item.peran"></div>
-                        </div>
-                        <div>
-                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">No. HP/WA</div>
-                            <div class="text-sm" x-text="item.hp"></div>
-                        </div>
-                        <div>
-                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Email</div>
-                            <div class="break-all text-sm" x-text="item.email"></div>
-                        </div>
-                        <div>
-                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Banjar</div>
-                            <div class="text-sm" x-text="item.banjar"></div>
-                        </div>
-                        <div>
-                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Tanggal Daftar</div>
-                            <div class="font-mono text-sm" x-text="item.tanggal"></div>
-                        </div>
-
-                        {{-- Bagian yang berbeda antara warga & pengangkut --}}
-                        <div class="sm:col-span-2">
-                            <template x-if="item.isWarga">
-                                <div>
-                                    <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Alamat Detail</div>
-                                    <div class="text-sm" x-text="item.alamat"></div>
-                                </div>
-                            </template>
-
-                            <template x-if="!item.isWarga">
-                                <div>
-                                    <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Banjar Jangkauan</div>
-                                    <div class="flex flex-wrap gap-1.5">
-                                        <template x-for="banjar in item.jangkauan" :key="banjar">
-                                            <span class="rounded-full bg-leaf-100 px-2.5 py-1 text-xs font-semibold text-leaf-700"
-                                                x-text="banjar"></span>
-                                        </template>
-                                    </div>
-
-                                    <div class="mb-1 mt-3 text-[11px] uppercase tracking-[0.03em] text-ink-faint">No. KTP</div>
-                                    <div class="font-mono text-sm" x-text="item.ktp"></div>
-
-                                    <div class="mb-1 mt-3 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Logo Banjar</div>
-                                    <template x-if="item.logoUrl">
-                                        <img :src="item.logoUrl" :alt="item.banjar"
-                                            class="h-11 w-11 rounded-[10px] border border-line object-cover">
-                                    </template>
-                                    <template x-if="!item.logoUrl">
-                                        <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-leaf-100 text-leaf-700">
-                                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                <path d="M4 4h16v16H4z" /><path d="m4 16 4-4 4 4 6-6" />
-                                            </svg>
-                                        </div>
-                                    </template>
-                                    <div class="mt-1 text-xs text-ink-faint" x-text="item.logoNama"></div>
-                                </div>
-                            </template>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex gap-2.5 px-[22px] pb-[22px] pt-4">
-                    <button type="button" @click="detailOpen = false"
-                        class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
-                        Tutup
-                    </button>
-                    <template x-if="item.menunggu">
-                        <button type="button" @click="detailOpen = false; tolakOpen = true"
-                            class="flex-1 rounded-[10px] bg-clay-600 py-3 text-sm font-semibold text-white">
-                            Tolak
-                        </button>
-                    </template>
-                    <template x-if="item.menunggu">
-                        <button type="button" @click="detailOpen = false; setujuiOpen = true"
-                            class="flex-1 rounded-[10px] bg-leaf-700 py-3 text-sm font-semibold text-white">
-                            Setujui
-                        </button>
-                    </template>
-                </div>
+        <x-modal state="detailOpen" title="Detail Permintaan" :scrollable="true">
+            <div class="px-[22px] py-5">
+                @include('admin.partials.detail-anggota')
             </div>
-        </div>
+
+            <div class="flex gap-2.5 px-[22px] pb-[22px] pt-4">
+                <button type="button" @click="detailOpen = false"
+                    class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
+                    Tutup
+                </button>
+                <template x-if="item.menunggu">
+                    <button type="button" @click="detailOpen = false; tolakOpen = true"
+                        class="flex-1 rounded-[10px] bg-clay-600 py-3 text-sm font-semibold text-white">
+                        Tolak
+                    </button>
+                </template>
+                <template x-if="item.menunggu">
+                    <button type="button" @click="detailOpen = false; setujuiOpen = true"
+                        class="flex-1 rounded-[10px] bg-leaf-700 py-3 text-sm font-semibold text-white">
+                        Setujui
+                    </button>
+                </template>
+            </div>
+        </x-modal>
 
         {{-- ====================== Modal: setujui ====================== --}}
-        <div x-show="setujuiOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-leaf-900/45 p-6">
-            <div @click.outside="setujuiOpen = false" class="w-full max-w-[480px] rounded-2xl bg-white">
-                <div class="flex items-center justify-between border-b border-line px-[22px] py-5">
-                    <h3 class="font-display text-[17px] font-semibold text-leaf-900">Setujui Pendaftaran</h3>
-                    <button type="button" @click="setujuiOpen = false"
-                        class="h-[30px] w-[30px] rounded-full bg-paper text-base leading-none text-ink-soft">&times;</button>
+        <x-modal state="setujuiOpen" title="Setujui Pendaftaran">
+            <form method="POST" :action="item.aksiSetujui">
+                @csrf
+                @method('PATCH')
+
+                <div class="px-[22px] py-5">
+                    <p class="text-[13.5px] leading-relaxed text-ink-soft">
+                        Pendaftaran <strong class="text-ink" x-text="item.nama"></strong>
+                        sebagai <span x-text="item.peran"></span> di <span x-text="item.banjar"></span>
+                        akan ditandai disetujui.
+                    </p>
+                    <p class="mt-3 text-xs text-ink-faint">
+                        Pemberitahuan email belum aktif — sampaikan hasilnya ke pemohon secara manual.
+                    </p>
                 </div>
 
-                <form method="POST" :action="item.aksiSetujui">
-                    @csrf
-                    @method('PATCH')
-
-                    <div class="px-[22px] py-5">
-                        <p class="text-[13.5px] leading-relaxed text-ink-soft">
-                            Pendaftaran <strong class="text-ink" x-text="item.nama"></strong>
-                            sebagai <span x-text="item.peran"></span> di <span x-text="item.banjar"></span>
-                            akan ditandai disetujui.
-                        </p>
-                        <p class="mt-3 text-xs text-ink-faint">
-                            Pemberitahuan email belum aktif — sampaikan hasilnya ke pemohon secara manual.
-                        </p>
-                    </div>
-
-                    <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
-                        <button type="button" @click="setujuiOpen = false"
-                            class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="flex-1 rounded-[10px] bg-leaf-700 py-3 text-sm font-semibold text-white hover:bg-leaf-900">
-                            Setujui
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
+                    <button type="button" @click="setujuiOpen = false"
+                        class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="flex-1 rounded-[10px] bg-leaf-700 py-3 text-sm font-semibold text-white hover:bg-leaf-900">
+                        Setujui
+                    </button>
+                </div>
+            </form>
+        </x-modal>
 
         {{-- ====================== Modal: tolak ====================== --}}
-        <div x-show="tolakOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-leaf-900/45 p-6">
-            <div @click.outside="tolakOpen = false" class="w-full max-w-[480px] rounded-2xl bg-white">
-                <div class="flex items-center justify-between border-b border-line px-[22px] py-5">
-                    <h3 class="font-display text-[17px] font-semibold text-leaf-900">Tolak Pendaftaran</h3>
-                    <button type="button" @click="tolakOpen = false"
-                        class="h-[30px] w-[30px] rounded-full bg-paper text-base leading-none text-ink-soft">&times;</button>
+        <x-modal state="tolakOpen" title="Tolak Pendaftaran">
+            <form method="POST" :action="item.aksiTolak">
+                @csrf
+                @method('PATCH')
+
+                <div class="px-[22px] py-5">
+                    <p class="mb-3 text-[13.5px] text-ink-soft">
+                        Alasan ini disimpan dan ditampilkan pada daftar permintaan.
+                    </p>
+                    <textarea name="review_note" maxlength="255"
+                        placeholder="Contoh: alamat di luar wilayah banjar, data KTP tidak terbaca, dll."
+                        class="min-h-[80px] w-full resize-y rounded-[10px] border border-line px-3.5 py-3 text-sm
+                               focus:border-clay-600 focus:outline-none"></textarea>
                 </div>
 
-                <form method="POST" :action="item.aksiTolak">
-                    @csrf
-                    @method('PATCH')
-
-                    <div class="px-[22px] py-5">
-                        <p class="mb-3 text-[13.5px] text-ink-soft">
-                            Alasan ini disimpan dan ditampilkan pada daftar permintaan.
-                        </p>
-                        <textarea name="review_note" maxlength="255"
-                            placeholder="Contoh: alamat di luar wilayah banjar, data KTP tidak terbaca, dll."
-                            class="min-h-[80px] w-full resize-y rounded-[10px] border border-line px-3.5 py-3 text-sm
-                                   focus:border-clay-600 focus:outline-none"></textarea>
-                    </div>
-
-                    <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
-                        <button type="button" @click="tolakOpen = false"
-                            class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="flex-1 rounded-[10px] bg-clay-600 py-3 text-sm font-semibold text-white hover:opacity-90">
-                            Tolak Pendaftaran
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
+                    <button type="button" @click="tolakOpen = false"
+                        class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="flex-1 rounded-[10px] bg-clay-600 py-3 text-sm font-semibold text-white hover:opacity-90">
+                        Tolak Pendaftaran
+                    </button>
+                </div>
+            </form>
+        </x-modal>
 
     </div>
 

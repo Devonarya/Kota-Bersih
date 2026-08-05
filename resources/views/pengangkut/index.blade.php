@@ -17,11 +17,7 @@
         {{-- Kartu identitas pengangkut --}}
         <div class="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
             <div class="flex items-center gap-5">
-                @if ($user->avatarUrl())
-                    <img src="{{ $user->avatarUrl() }}" alt="{{ $user->name }}" class="h-16 w-16 rounded-xl object-cover">
-                @else
-                    <div class="h-16 w-16 rounded-xl bg-gray-200"></div>
-                @endif
+                <x-avatar :user="$user" size="h-16 w-16 text-xl" rounded="rounded-xl" />
                 <div>
                     <p class="text-xl font-semibold text-gray-800">{{ $user->name }}</p>
                     <p class="text-sm text-gray-500">Wilayah: {{ $user->banjar->name ?? 'Belum ada banjar' }}</p>
@@ -41,7 +37,7 @@
             @forelse ($requests as $item)
                 <div class="flex flex-col gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
                     <div class="flex items-start gap-4">
-                        <x-avatar :name="$item->user->name" :src="$item->user->avatarUrl()" size="h-11 w-11 text-sm" />
+                        <x-avatar :user="$item->user" size="h-11 w-11 text-sm" />
                         <div>
                             <p class="text-xl font-semibold text-gray-800">{{ $item->user->name }}</p>
                             <p class="text-sm text-gray-500">Wilayah: {{ $item->banjar->name }}</p>
@@ -84,7 +80,7 @@
                 @foreach ($jadwal as $item)
                     <div class="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
                         <div class="flex items-center gap-4">
-                            <x-avatar :name="$item->user->name" :src="$item->user->avatarUrl()" size="h-10 w-10 text-sm" />
+                            <x-avatar :user="$item->user" size="h-10 w-10 text-sm" />
                             <div>
                                 <p class="font-medium text-gray-800">{{ $item->user->name }}</p>
                                 <p class="text-sm text-gray-500">{{ $item->banjar->name }}</p>

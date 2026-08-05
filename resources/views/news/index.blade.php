@@ -37,7 +37,7 @@
                 <p class="mt-3 text-gray-600">{{ \Illuminate\Support\Str::limit(strip_tags($featured->content), 320) }}</p>
 
                 <div class="mt-6 flex items-center gap-3">
-                    <x-avatar :name="$featured->author->name" :src="$featured->author->avatarUrl()" size="h-9 w-9 text-sm" />
+                    <x-avatar :user="$featured->author" size="h-9 w-9 text-sm" />
                     <span class="text-gray-700">{{ $featured->author->name }}</span>
                 </div>
             </div>

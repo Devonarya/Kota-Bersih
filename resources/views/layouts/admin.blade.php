@@ -77,14 +77,7 @@
 
             {{-- Akun + logout --}}
             <div class="ml-auto flex shrink-0 items-center gap-2.5 md:ml-0 md:mt-auto md:border-t md:border-line md:pl-2.5 md:pt-3.5">
-                @if (auth()->user()->avatarUrl())
-                    <img src="{{ auth()->user()->avatarUrl() }}" alt="{{ auth()->user()->name }}"
-                        class="h-[34px] w-[34px] shrink-0 rounded-full object-cover">
-                @else
-                    <span class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-gold-100 text-xs font-bold text-gold-600">
-                        {{ auth()->user()->initials() }}
-                    </span>
-                @endif
+                <x-avatar :user="auth()->user()" size="h-[34px] w-[34px] text-xs" />
 
                 <div>
                     <div class="text-[13px] font-semibold text-ink">{{ auth()->user()->name }}</div>

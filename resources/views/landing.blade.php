@@ -75,22 +75,10 @@
                 </div>
 
                 <div class="grid min-w-[220px] flex-1 content-start grid-cols-2 gap-3.5">
-                    <div class="rounded-[14px] border border-line bg-white px-5 py-[18px]">
-                        <div class="font-display text-[26px] text-leaf-900">{{ $jumlahWarga }}</div>
-                        <div class="mt-1 text-xs text-ink-soft">Warga terdaftar</div>
-                    </div>
-                    <div class="rounded-[14px] border border-line bg-white px-5 py-[18px]">
-                        <div class="font-display text-[26px] text-leaf-900">{{ $setoranBulanIni }} kali</div>
-                        <div class="mt-1 text-xs text-ink-soft">Setoran bulan ini</div>
-                    </div>
-                    <div class="rounded-[14px] border border-line bg-white px-5 py-[18px]">
-                        <div class="font-display text-[26px] text-leaf-900">{{ $jumlahBanjar }}</div>
-                        <div class="mt-1 text-xs text-ink-soft">Banjar tergabung</div>
-                    </div>
-                    <div class="rounded-[14px] border border-line bg-white px-5 py-[18px]">
-                        <div class="font-display text-[26px] text-leaf-900">{{ $jumlahPengangkut > 0 ? 'Aktif' : 'Kosong' }}</div>
-                        <div class="mt-1 text-xs text-ink-soft">Status pengangkut hari ini</div>
-                    </div>
+                    <x-stat :value="$jumlahWarga" label="Warga terdaftar" />
+                    <x-stat :value="$setoranBulanIni.' kali'" label="Setoran bulan ini" />
+                    <x-stat :value="$jumlahBanjar" label="Banjar tergabung" />
+                    <x-stat :value="$jumlahPengangkut > 0 ? 'Aktif' : 'Kosong'" label="Status pengangkut hari ini" />
                 </div>
             </div>
         </section>
@@ -112,8 +100,8 @@
                     <div class="flex flex-col gap-2.5">
                         @forelse ($pengumuman as $item)
                             @php $gaya = $kategoriGaya[$item->category] @endphp
-                            <a href="{{ route('news.show', $item) }}"
-                                class="flex items-center gap-3.5 rounded-[14px] border border-line bg-white px-4 py-3.5 hover:border-leaf-600">
+                            <x-card as="a" href="{{ route('news.show', $item) }}"
+                                class="flex items-center gap-3.5 px-4 py-3.5 hover:border-leaf-600">
                                 <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[10px] {{ $gaya['thumb'] }}">
                                     <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                         <path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9" />
@@ -129,7 +117,7 @@
                                         {{ $item->published_at?->format('d M Y') ?? '—' }}
                                     </div>
                                 </div>
-                            </a>
+                            </x-card>
                         @empty
                             <p class="rounded-[14px] border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-faint">
                                 Belum ada pengumuman.
@@ -148,8 +136,8 @@
                     <div class="flex flex-col gap-2.5">
                         @forelse ($berita as $item)
                             @php $gaya = $kategoriGaya[$item->category] @endphp
-                            <a href="{{ route('news.show', $item) }}"
-                                class="flex items-center gap-3.5 rounded-[14px] border border-line bg-white px-4 py-3.5 hover:border-leaf-600">
+                            <x-card as="a" href="{{ route('news.show', $item) }}"
+                                class="flex items-center gap-3.5 px-4 py-3.5 hover:border-leaf-600">
                                 <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[10px] {{ $gaya['thumb'] }}">
                                     @if ($item->category === 'daur_ulang')
                                         <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -176,7 +164,7 @@
                                         {{ $item->published_at?->format('d M Y') ?? '—' }}
                                     </div>
                                 </div>
-                            </a>
+                            </x-card>
                         @empty
                             <p class="rounded-[14px] border border-dashed border-line px-4 py-6 text-center text-[13px] text-ink-faint">
                                 Belum ada berita.

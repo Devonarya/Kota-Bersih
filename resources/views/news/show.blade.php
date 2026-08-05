@@ -49,14 +49,7 @@
         </h1>
 
         <div class="mt-[22px] flex items-center gap-[11px]">
-            @if ($news->author->avatarUrl())
-                <img src="{{ $news->author->avatarUrl() }}" alt="{{ $news->author->name }}"
-                    class="h-[34px] w-[34px] shrink-0 rounded-full object-cover">
-            @else
-                <span class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-gold-100 font-display text-xs font-semibold text-gold-600">
-                    {{ $news->author->initials() }}
-                </span>
-            @endif
+            <x-avatar :user="$news->author" size="h-[34px] w-[34px] text-xs" />
 
             <div>
                 <div class="text-[13.5px] font-semibold text-ink">{{ $news->author->name }}</div>
@@ -97,8 +90,8 @@
 
             <div class="flex flex-col gap-2.5">
                 @foreach ($lainnya as $item)
-                    <a href="{{ route('news.show', $item) }}"
-                        class="flex items-center gap-3.5 rounded-[14px] border border-line bg-white px-4 py-3.5 hover:border-leaf-600">
+                    <x-card as="a" href="{{ route('news.show', $item) }}"
+                        class="flex items-center gap-3.5 px-4 py-3.5 hover:border-leaf-600">
                         <div class="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[10px] {{ $kategoriGaya[$item->category]['thumb'] }}">
                             <svg class="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 {!! $ikonKategori[$item->category] ?? $ikonBawaan !!}
@@ -114,7 +107,7 @@
                                 {{ $item->published_at?->locale('id')->translatedFormat('j M Y') ?? '—' }}
                             </div>
                         </div>
-                    </a>
+                    </x-card>
                 @endforeach
             </div>
         </div>

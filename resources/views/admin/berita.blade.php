@@ -38,18 +38,9 @@
                     ];
                 @endphp
 
-                <div class="flex flex-wrap items-center justify-between gap-4 rounded-[14px] border border-line bg-white px-[18px] py-4">
+                <x-card class="flex flex-wrap items-center justify-between gap-4 px-[18px] py-4">
                     <div class="flex min-w-[240px] flex-1 items-center gap-3.5">
-                        @if ($item->cover_image_path)
-                            <img src="{{ \Illuminate\Support\Facades\Storage::url($item->cover_image_path) }}" alt=""
-                                class="h-[52px] w-[68px] shrink-0 rounded-[10px] border border-line object-cover">
-                        @else
-                            <div class="flex h-[52px] w-[68px] shrink-0 items-center justify-center rounded-[10px] bg-leaf-100 text-leaf-700">
-                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M4 4h16v16H4z" /><path d="m4 16 4-4 4 4 6-6" />
-                                </svg>
-                            </div>
-                        @endif
+                        <x-news-cover :news="$item" />
 
                         <div class="min-w-0">
                             <div class="flex flex-wrap items-center gap-2">
@@ -96,92 +87,76 @@
                             </svg>
                         </button>
                     </div>
-                </div>
+                </x-card>
             @empty
-                <div class="rounded-[14px] border border-line bg-white px-5 py-[60px] text-center text-sm text-ink-faint">
+                <x-card class="px-5 py-[60px] text-center text-sm text-ink-faint">
                     Belum ada tulisan sama sekali.
-                </div>
+                </x-card>
             @endforelse
         </div>
 
         {{-- ====================== Modal: turunkan jadi draf ====================== --}}
-        <div x-show="turunOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-leaf-900/45 p-6">
-            <div @click.outside="turunOpen = false" class="w-full max-w-[480px] rounded-2xl bg-white">
-                <div class="flex items-center justify-between border-b border-line px-[22px] py-5">
-                    <h3 class="font-display text-[17px] font-semibold text-leaf-900">Turunkan Jadi Draf</h3>
-                    <button type="button" @click="turunOpen = false"
-                        class="h-[30px] w-[30px] rounded-full bg-paper text-base leading-none text-ink-soft">&times;</button>
+        <x-modal state="turunOpen" title="Turunkan Jadi Draf">
+            <form method="POST" :action="item.aksiTurun">
+                @csrf
+                @method('PATCH')
+
+                <div class="px-[22px] py-5">
+                    <p class="text-[13.5px] leading-relaxed text-ink-soft">
+                        <strong class="text-ink" x-text="item.judul"></strong> akan hilang dari halaman publik.
+                    </p>
+                    <p class="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
+                        Naskahnya tetap aman dan kembali ke Tulisan Saya milik
+                        <span class="font-semibold text-ink" x-text="item.penulis"></span>,
+                        jadi masih bisa diperbaiki lalu diterbitkan lagi.
+                    </p>
+                    <p class="mt-3 text-xs text-ink-faint">
+                        Pemberitahuan email belum aktif — sampaikan alasannya ke penulis secara manual.
+                    </p>
                 </div>
 
-                <form method="POST" :action="item.aksiTurun">
-                    @csrf
-                    @method('PATCH')
-
-                    <div class="px-[22px] py-5">
-                        <p class="text-[13.5px] leading-relaxed text-ink-soft">
-                            <strong class="text-ink" x-text="item.judul"></strong> akan hilang dari halaman publik.
-                        </p>
-                        <p class="mt-3 text-[13.5px] leading-relaxed text-ink-soft">
-                            Naskahnya tetap aman dan kembali ke Tulisan Saya milik
-                            <span class="font-semibold text-ink" x-text="item.penulis"></span>,
-                            jadi masih bisa diperbaiki lalu diterbitkan lagi.
-                        </p>
-                        <p class="mt-3 text-xs text-ink-faint">
-                            Pemberitahuan email belum aktif — sampaikan alasannya ke penulis secara manual.
-                        </p>
-                    </div>
-
-                    <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
-                        <button type="button" @click="turunOpen = false"
-                            class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="flex-1 rounded-[10px] bg-leaf-700 py-3 text-sm font-semibold text-white hover:bg-leaf-900">
-                            Turunkan
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
+                    <button type="button" @click="turunOpen = false"
+                        class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="flex-1 rounded-[10px] bg-leaf-700 py-3 text-sm font-semibold text-white hover:bg-leaf-900">
+                        Turunkan
+                    </button>
+                </div>
+            </form>
+        </x-modal>
 
         {{-- ====================== Modal: hapus permanen ====================== --}}
-        <div x-show="hapusOpen" x-cloak class="fixed inset-0 z-50 flex items-center justify-center bg-leaf-900/45 p-6">
-            <div @click.outside="hapusOpen = false" class="w-full max-w-[480px] rounded-2xl bg-white">
-                <div class="flex items-center justify-between border-b border-line px-[22px] py-5">
-                    <h3 class="font-display text-[17px] font-semibold text-leaf-900">Hapus Permanen</h3>
-                    <button type="button" @click="hapusOpen = false"
-                        class="h-[30px] w-[30px] rounded-full bg-paper text-base leading-none text-ink-soft">&times;</button>
+        <x-modal state="hapusOpen" title="Hapus Permanen">
+            <form method="POST" :action="item.aksiHapus">
+                @csrf
+                @method('DELETE')
+
+                <div class="px-[22px] py-5">
+                    <p class="text-[13.5px] leading-relaxed text-ink-soft">
+                        Hapus <strong class="text-ink" x-text="item.judul"></strong> milik
+                        <span x-text="item.penulis"></span> selamanya?
+                    </p>
+                    <p class="mt-3 text-xs text-ink-faint">
+                        Naskahnya hilang dari Tulisan Saya penulisnya juga dan tidak bisa dikembalikan.
+                        Kalau cuma ingin menariknya dari publik, pakai Turunkan.
+                    </p>
                 </div>
 
-                <form method="POST" :action="item.aksiHapus">
-                    @csrf
-                    @method('DELETE')
-
-                    <div class="px-[22px] py-5">
-                        <p class="text-[13.5px] leading-relaxed text-ink-soft">
-                            Hapus <strong class="text-ink" x-text="item.judul"></strong> milik
-                            <span x-text="item.penulis"></span> selamanya?
-                        </p>
-                        <p class="mt-3 text-xs text-ink-faint">
-                            Naskahnya hilang dari Tulisan Saya penulisnya juga dan tidak bisa dikembalikan.
-                            Kalau cuma ingin menariknya dari publik, pakai Turunkan.
-                        </p>
-                    </div>
-
-                    <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
-                        <button type="button" @click="hapusOpen = false"
-                            class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
-                            Batal
-                        </button>
-                        <button type="submit"
-                            class="flex-1 rounded-[10px] bg-clay-600 py-3 text-sm font-semibold text-white hover:opacity-90">
-                            Hapus Permanen
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
+                <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
+                    <button type="button" @click="hapusOpen = false"
+                        class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="flex-1 rounded-[10px] bg-clay-600 py-3 text-sm font-semibold text-white hover:opacity-90">
+                        Hapus Permanen
+                    </button>
+                </div>
+            </form>
+        </x-modal>
 
     </div>
 

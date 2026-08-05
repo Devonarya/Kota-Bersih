@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="mx-auto max-w-[440px]">
-        <div class="rounded-[14px] border border-line bg-white px-[30px] pb-[30px] pt-[34px] text-center">
+        <x-card class="px-[30px] pb-[30px] pt-[34px] text-center">
 
             <x-logo size="h-[52px] w-[52px]" class="mx-auto mb-[18px]" />
 
@@ -77,6 +77,6 @@
                 Belum punya akun? <a href="{{ route('register') }}" class="font-semibold text-leaf-700 hover:underline">Daftar di sini</a>
             </p>
 
-        </div>
+        </x-card>
     </div>
 @endsection

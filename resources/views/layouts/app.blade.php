@@ -56,14 +56,7 @@
 
             {{-- Akun + logout --}}
             <div class="ml-auto flex shrink-0 items-center gap-2.5 md:ml-0 md:mt-auto md:border-t md:border-line md:pl-2.5 md:pt-3.5">
-                @if ($user->avatarUrl())
-                    <img src="{{ $user->avatarUrl() }}" alt="{{ $user->name }}"
-                        class="h-[34px] w-[34px] shrink-0 rounded-full object-cover">
-                @else
-                    <span class="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full bg-gold-100 text-xs font-bold text-gold-600">
-                        {{ $user->initials() }}
-                    </span>
-                @endif
+                <x-avatar :user="$user" size="h-[34px] w-[34px] text-xs" />
 
                 <div>
                     <a href="{{ route('profil.edit') }}"

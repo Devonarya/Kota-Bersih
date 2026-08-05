@@ -29,8 +29,8 @@
             </button>
         </div>
 
-        <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data"
-            class="mt-[18px] overflow-hidden rounded-[14px] border border-line bg-white">
+        <x-card as="form" method="POST" action="{{ route('register') }}" enctype="multipart/form-data"
+            class="mt-[18px] overflow-hidden">
             @csrf
             <input type="hidden" name="role" :value="role">
 
@@ -171,7 +171,7 @@
                 </p>
 
             </div>
-        </form>
+        </x-card>
 
         <p class="mt-6 text-center text-[13px] text-ink-soft">
             Sudah punya akun? <a href="{{ route('login') }}" class="font-semibold text-leaf-700 hover:underline">Masuk di sini</a>

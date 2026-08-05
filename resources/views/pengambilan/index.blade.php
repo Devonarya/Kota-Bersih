@@ -49,7 +49,7 @@
                     : ['label' => 'Menunggu Pengangkut', 'kelas' => 'bg-gold-100 text-gold-600'];
             @endphp
 
-            <div class="mt-[18px] rounded-[14px] border border-line bg-white px-6 py-[26px]">
+            <x-card class="mt-[18px] px-6 py-[26px]">
 
                 <div class="flex flex-wrap items-start justify-between gap-2.5">
                     <div>
@@ -97,8 +97,7 @@
                 </p>
 
                 <div class="mb-1.5 grid grid-cols-1 gap-x-3.5 gap-y-4 sm:grid-cols-2">
-                    <div class="sm:col-span-2">
-                        <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Jenis Sampah</div>
+                    <x-field label="Jenis Sampah" class="sm:col-span-2">
                         <div class="flex flex-wrap gap-1.5">
                             @foreach ($aktif->types as $tipe)
                                 <span class="inline-block rounded-full px-2.5 py-1 text-[11px] font-semibold {{ $jenisWarna[$tipe->jenis_sampah] ?? '' }}">
@@ -106,10 +105,9 @@
                                 </span>
                             @endforeach
                         </div>
-                    </div>
+                    </x-field>
 
-                    <div>
-                        <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Waktu Diinginkan</div>
+                    <x-field label="Waktu Diinginkan">
                         <div class="text-[13.5px] text-ink">
                             @if ($aktif->scheduled_time_slot && isset($waktuOpsi[$aktif->scheduled_time_slot]))
                                 {{ $waktuOpsi[$aktif->scheduled_time_slot]['label'] }} ·
@@ -118,36 +116,42 @@
                                 Belum ditentukan
                             @endif
                         </div>
-                    </div>
+                    </x-field>
 
-                    <div>
-                        <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Diajukan</div>
+                    <x-field label="Diajukan">
                         <div class="font-mono text-[13.5px] text-ink">
                             {{ $aktif->created_at->locale('id')->translatedFormat('d M Y · H.i') }}
                         </div>
-                    </div>
+                    </x-field>
 
-                    <div class="sm:col-span-2">
-                        <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Lokasi</div>
+                    <x-field label="Lokasi" class="sm:col-span-2">
                         <div class="text-[13.5px] text-ink">{{ $user->address ?: 'Alamat belum diisi di profil' }}</div>
-                    </div>
+                    </x-field>
 
                     @if ($aktif->detail_lokasi)
-                        <div class="sm:col-span-2">
-                            <div class="mb-1 text-[11px] uppercase tracking-[0.03em] text-ink-faint">Detail Lokasi</div>
+                        <x-field label="Detail Lokasi" class="sm:col-span-2">
                             <div class="text-[13.5px] text-ink">{{ $aktif->detail_lokasi }}</div>
-                        </div>
+                        </x-field>
                     @endif
                 </div>
 
-            </div>
+            </x-card>
 
         @else
 
             {{-- ================= BELUM ADA PERMINTAAN ================= --}}
-            <form method="POST" action="{{ route('pengambilan.store') }}"
-                x-data="{ jenis: @js(old('jenis_sampah', ['organik'])), waktu: '{{ old('scheduled_time_slot', 'pagi') }}' }"
-                class="mt-[18px] rounded-[14px] border border-line bg-white px-6 pb-[26px] pt-6">
+            @php
+                // Dirakit di sini, bukan langsung di atribut: @js() tidak ikut
+                // dikompilasi kalau ditulis di dalam atribut komponen Blade.
+                $stateAwal = json_encode([
+                    'jenis' => array_values((array) old('jenis_sampah', ['organik'])),
+                    'waktu' => old('scheduled_time_slot', 'pagi'),
+                ]);
+            @endphp
+
+            <x-card as="form" method="POST" action="{{ route('pengambilan.store') }}"
+                x-data="{{ $stateAwal }}"
+                class="mt-[18px] px-6 pb-[26px] pt-6">
                 @csrf
 
                 <div class="mb-5">
@@ -237,7 +241,7 @@
                     class="mt-6 w-full rounded-[10px] bg-leaf-700 py-3.5 text-[14.5px] font-semibold text-white transition hover:bg-leaf-900">
                     Ajukan Pengambilan
                 </button>
-            </form>
+            </x-card>
 
         @endif
 

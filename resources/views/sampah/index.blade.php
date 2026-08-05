@@ -14,7 +14,7 @@
 
     <div class="flex flex-col items-start justify-between gap-4 rounded-2xl bg-white p-6 shadow-sm sm:flex-row sm:items-center">
         <div class="flex items-center gap-4">
-            <x-avatar :name="$user->name" :src="$user->avatarUrl()" size="h-16 w-16 text-xl" />
+            <x-avatar :user="$user" size="h-16 w-16 text-xl" />
             <div>
                 <p class="text-xl font-semibold text-gray-800">{{ $user->name }}</p>
                 <p class="text-sm text-gray-500">{{ $user->banjar->name ?? 'Belum ada banjar' }} &middot; No. Warga {{ $user->id }}</p>
