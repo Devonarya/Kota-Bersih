@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MemberController;
 use App\Http\Controllers\Admin\MemberRequestController;
 use App\Http\Controllers\Admin\NewsController as AdminNewsController;
+use App\Http\Controllers\Admin\WilayahController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\BanjarController;
@@ -48,9 +49,18 @@ Route::middleware('auth')->group(function () {
         Route::patch('/berita/{news}/turunkan', [AdminNewsController::class, 'demote'])->name('berita.demote');
         Route::delete('/berita/{news}', [AdminNewsController::class, 'destroy'])->name('berita.destroy');
 
-        Route::get('/banjar', [AdminBanjarController::class, 'index'])->name('banjar.index');
-        Route::patch('/banjar/{banjar}', [AdminBanjarController::class, 'update'])->name('banjar.update');
-        Route::delete('/banjar/{banjar}', [AdminBanjarController::class, 'destroy'])->name('banjar.destroy');
+        // Wilayah bertingkat. Kabupaten/kecamatan/desa read-only (data Kemendagri,
+        // diisi lewat `php artisan wilayah:impor`) — makanya cuma ada GET. URL tiap
+        // level cukup membawa id dirinya sendiri; remah jejak dibangun dari relasi.
+        Route::get('/wilayah', [WilayahController::class, 'kabupatenIndex'])->name('wilayah.index');
+        Route::get('/wilayah/kabupaten/{kabupaten}', [WilayahController::class, 'kecamatanIndex'])->name('wilayah.kabupaten');
+        Route::get('/wilayah/kecamatan/{kecamatan}', [WilayahController::class, 'desaIndex'])->name('wilayah.kecamatan');
+
+        // Banjar satuan adat, tidak ada di data Kemendagri, jadi tetap dikelola admin.
+        Route::get('/wilayah/desa/{desa}', [AdminBanjarController::class, 'index'])->name('wilayah.desa');
+        Route::post('/wilayah/desa/{desa}/banjar', [AdminBanjarController::class, 'store'])->name('wilayah.banjar.store');
+        Route::patch('/wilayah/banjar/{banjar}', [AdminBanjarController::class, 'update'])->name('wilayah.banjar.update');
+        Route::delete('/wilayah/banjar/{banjar}', [AdminBanjarController::class, 'destroy'])->name('wilayah.banjar.destroy');
     });
 
     Route::get('/profil', [ProfileController::class, 'edit'])->name('profil.edit');

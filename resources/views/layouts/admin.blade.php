@@ -7,7 +7,9 @@
             ['label' => 'Pengangkut', 'icon' => 'pengangkut', 'route' => 'admin.pengangkut.index'],
         ],
         'Operasional' => [
-            ['label' => 'Banjar', 'icon' => 'banjar', 'route' => 'admin.banjar.index'],
+            // 'aktif' dipakai kalau menu harus tetap tersorot di halaman turunannya
+            // (wilayah punya drill-down sampai empat level).
+            ['label' => 'Wilayah', 'icon' => 'banjar', 'route' => 'admin.wilayah.index', 'aktif' => 'admin.wilayah.*'],
         ],
         'Konten' => [
             ['label' => 'Pengumuman & Berita', 'icon' => 'konten', 'route' => 'admin.berita.index'],
@@ -58,7 +60,7 @@
                     @foreach ($items as $item)
                         @if (isset($item['route']))
                             <a href="{{ route($item['route']) }}"
-                                class="{{ $navItem }} mb-0.5 {{ request()->routeIs($item['route'])
+                                class="{{ $navItem }} mb-0.5 {{ request()->routeIs($item['aktif'] ?? $item['route'])
                                     ? 'bg-leaf-100 font-semibold text-leaf-700'
                                     : 'text-ink-soft hover:bg-paper' }}">
                                 @include('partials.icon', ['name' => $item['icon']])

@@ -8,13 +8,23 @@
 
 @section('content')
 
-    <div x-data="{ editOpen: false, hapusOpen: false, item: {} }">
+    <div x-data="{ tambahOpen: false, editOpen: false, hapusOpen: false, item: {} }">
+
+        @include('admin.partials.remah')
 
         {{-- Judul halaman --}}
-        <div class="pb-1">
-            <p class="mb-2 font-mono text-xs uppercase tracking-[0.08em] text-leaf-600">Operasional</p>
-            <h1 class="font-display text-[25px] font-semibold text-leaf-900">Banjar</h1>
-            <p class="mt-1.5 text-sm text-ink-soft">Kelola data banjar yang terdaftar di sistem.</p>
+        <div class="flex flex-wrap items-start justify-between gap-4 pb-1">
+            <div>
+                {{-- Label kecil menunjuk isi halaman (banjar), bukan induknya --}}
+                <p class="mb-2 font-mono text-xs uppercase tracking-[0.08em] text-leaf-600">Banjar</p>
+                <h1 class="font-display text-[25px] font-semibold text-leaf-900">{{ $desa->name }}</h1>
+                <p class="mt-1.5 text-sm text-ink-soft">Daftar banjar di desa ini.</p>
+            </div>
+
+            <button type="button" @click="tambahOpen = true"
+                class="rounded-[10px] bg-leaf-700 px-4 py-2.5 text-[13px] font-semibold text-white hover:bg-leaf-900">
+                + Tambah Banjar
+            </button>
         </div>
 
         {{-- Modal tertutup begitu halaman dimuat ulang, jadi galat validasinya
@@ -35,14 +45,13 @@
 
                     $dataItem = [
                         'nama' => $banjar->name,
-                        'desa' => $banjar->desa,
                         'deskripsi' => $banjar->description,
                         'keluarga' => $banjar->family_count,
                         'anggota' => $banjar->users_count,
                         'setoran' => $banjar->waste_deposits_count,
                         'bisaDihapus' => $bisaDihapus,
-                        'aksiUbah' => route('admin.banjar.update', $banjar),
-                        'aksiHapus' => route('admin.banjar.destroy', $banjar),
+                        'aksiUbah' => route('admin.wilayah.banjar.update', $banjar),
+                        'aksiHapus' => route('admin.wilayah.banjar.destroy', $banjar),
                     ];
                 @endphp
 
@@ -59,12 +68,7 @@
                     <div class="p-5">
                         <div class="flex items-start justify-between gap-3">
                             <div class="min-w-0">
-                                @if ($banjar->desa)
-                                    <span class="inline-block rounded-full bg-leaf-100 px-3 py-1 text-xs font-medium text-leaf-700">
-                                        {{ $banjar->desa }}
-                                    </span>
-                                @endif
-                                <p class="mt-2 font-display text-lg font-semibold text-leaf-900">{{ $banjar->name }}</p>
+                                <p class="font-display text-lg font-semibold text-leaf-900">{{ $banjar->name }}</p>
                             </div>
 
                             {{-- Aksi: ubah & hapus --}}
@@ -111,6 +115,53 @@
             @endforelse
         </div>
 
+        {{-- ====================== Modal: tambah banjar ====================== --}}
+        <x-modal state="tambahOpen" title="Tambah Banjar" :scrollable="true">
+            <form method="POST" action="{{ route('admin.wilayah.banjar.store', $desa) }}" enctype="multipart/form-data">
+                @csrf
+
+                <div class="space-y-4 px-[22px] py-5">
+                    <div>
+                        <label for="tambah_name" class="{{ $kelasLabel }}">Nama Banjar</label>
+                        <input id="tambah_name" type="text" name="name" required maxlength="255"
+                            value="{{ old('name') }}" placeholder="Contoh: Banjar Tegal Sari" class="{{ $kelasField }}">
+                    </div>
+
+                    <div>
+                        <label for="tambah_family_count" class="{{ $kelasLabel }}">Jumlah Keluarga</label>
+                        <input id="tambah_family_count" type="number" name="family_count" required min="0"
+                            value="{{ old('family_count', 0) }}" class="{{ $kelasField }}">
+                    </div>
+
+                    <div>
+                        <label for="tambah_description" class="{{ $kelasLabel }}">Deskripsi</label>
+                        <textarea id="tambah_description" name="description" maxlength="1000" rows="3"
+                            placeholder="Keterangan singkat tentang banjar ini."
+                            class="{{ $kelasField }} resize-y">{{ old('description') }}</textarea>
+                    </div>
+
+                    <div>
+                        <label for="tambah_logo" class="{{ $kelasLabel }}">Logo Banjar</label>
+                        <input id="tambah_logo" type="file" name="logo" accept="image/*"
+                            class="w-full text-sm text-ink-soft file:mr-3 file:rounded-[9px] file:border-0
+                                   file:bg-leaf-100 file:px-3.5 file:py-2 file:text-[13px] file:font-semibold file:text-leaf-700">
+                        <p class="mt-1 text-xs text-ink-faint">Opsional. Maksimal 2 MB.</p>
+                    </div>
+                </div>
+
+                <div class="flex gap-2.5 px-[22px] pb-[22px] pt-1">
+                    <button type="button" @click="tambahOpen = false"
+                        class="flex-1 rounded-[10px] border border-line bg-paper py-3 text-sm font-semibold text-ink-soft">
+                        Batal
+                    </button>
+                    <button type="submit"
+                        class="flex-1 rounded-[10px] bg-leaf-700 py-3 text-sm font-semibold text-white hover:bg-leaf-900">
+                        Tambah
+                    </button>
+                </div>
+            </form>
+        </x-modal>
+
         {{-- ====================== Modal: ubah banjar ====================== --}}
         <x-modal state="editOpen" title="Ubah Banjar" :scrollable="true">
             <form method="POST" :action="item.aksiUbah" enctype="multipart/form-data">
@@ -123,15 +174,6 @@
                         <input id="name" type="text" name="name" required maxlength="255"
                             :value="item.nama" class="{{ $kelasField }}">
                         @error('name')
-                            <p class="mt-1 text-xs text-clay-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
-                        <label for="desa" class="{{ $kelasLabel }}">Desa</label>
-                        <input id="desa" type="text" name="desa" maxlength="255"
-                            :value="item.desa" placeholder="Contoh: Desa Dauhwaru" class="{{ $kelasField }}">
-                        @error('desa')
                             <p class="mt-1 text-xs text-clay-600">{{ $message }}</p>
                         @enderror
                     </div>

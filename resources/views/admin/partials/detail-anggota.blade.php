@@ -27,22 +27,23 @@
                 </x-field>
 
                 <x-field label="No. KTP" text="item.ktp" value-class="font-mono text-sm" class="mt-3" />
-
-                <x-field label="Logo Banjar" class="mt-3">
-                    <template x-if="item.logoUrl">
-                        <img :src="item.logoUrl" :alt="item.banjar"
-                            class="h-11 w-11 rounded-[10px] border border-line object-cover">
-                    </template>
-                    <template x-if="!item.logoUrl">
-                        <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-leaf-100 text-leaf-700">
-                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M4 4h16v16H4z" /><path d="m4 16 4-4 4 4 6-6" />
-                            </svg>
-                        </div>
-                    </template>
-                    <div class="mt-1 text-xs text-ink-faint" x-text="item.logoNama"></div>
-                </x-field>
             </div>
         </template>
+
+        {{-- Logo milik banjar, bukan peran, jadi tampil untuk warga maupun pengangkut --}}
+        <x-field label="Logo Banjar" class="mt-3">
+            <template x-if="item.logoUrl">
+                <img :src="item.logoUrl" :alt="item.banjar"
+                    class="h-11 w-11 rounded-[10px] border border-line object-cover">
+            </template>
+            <template x-if="!item.logoUrl">
+                <div class="flex h-11 w-11 items-center justify-center rounded-[10px] bg-leaf-100 text-leaf-700">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16v16H4z" /><path d="m4 16 4-4 4 4 6-6" />
+                    </svg>
+                </div>
+            </template>
+            <div class="mt-1 text-xs text-ink-faint" x-text="item.logoNama"></div>
+        </x-field>
     </div>
 </div>

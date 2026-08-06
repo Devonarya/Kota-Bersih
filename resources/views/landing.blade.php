@@ -34,26 +34,6 @@
                     </a>
                 </div>
             </div>
-
-            <div class="relative hidden h-[300px] w-[340px] shrink-0 overflow-hidden rounded-[20px] bg-leaf-700 lg:block">
-                <div class="absolute right-[18px] top-[18px] h-[110px] w-[110px]"
-                    style="background-image:radial-gradient(rgba(255,255,255,.18) 2px, transparent 2.5px);background-size:14px 14px;"></div>
-
-                <p class="absolute left-[26px] top-6 max-w-[150px] text-[13px] leading-[1.5] text-white/90">
-                    Setiap setoran tercatat rapi per banjar.
-                </p>
-
-                <div class="absolute bottom-[26px] left-[26px] w-[230px] -rotate-[4deg] rounded-[14px] bg-white p-4 shadow-[0_18px_34px_rgba(0,0,0,.22)]">
-                    <div class="flex justify-between font-mono text-[10px] uppercase tracking-[0.05em] text-ink-faint">
-                        <span>No. tiket</span>
-                        <span>Hari ini</span>
-                    </div>
-                    <div class="mt-1 font-mono text-[13px] font-bold text-leaf-700">BJK-0842</div>
-                    <span class="mt-2.5 inline-block rounded-[20px] bg-gold-100 px-2.5 py-1 text-[10px] font-semibold text-gold-600">
-                        Menunggu pengangkut
-                    </span>
-                </div>
-            </div>
         </div>
 
         {{-- ============================ TENTANG ============================ --}}

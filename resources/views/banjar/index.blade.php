@@ -28,7 +28,7 @@
                 </div>
                 <div class="p-5">
                     @if ($banjar->desa)
-                        <span class="inline-block rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-700">{{ $banjar->desa }}</span>
+                        <span class="inline-block rounded-full bg-brand-100 px-3 py-1 text-xs font-medium text-brand-700">{{ $banjar->desa->name }}</span>
                     @endif
                     <p class="mt-2 text-lg font-medium text-gray-800">{{ $banjar->name }}</p>
                     <p class="mt-1 text-sm text-gray-500">

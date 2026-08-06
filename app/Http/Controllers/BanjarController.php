@@ -10,7 +10,7 @@ class BanjarController extends Controller
     public function index(): View
     {
         return view('banjar.index', [
-            'banjars' => Banjar::withCount('users')->orderBy('name')->get(),
+            'banjars' => Banjar::with('desa')->withCount('users')->orderBy('name')->get(),
         ]);
     }
 }

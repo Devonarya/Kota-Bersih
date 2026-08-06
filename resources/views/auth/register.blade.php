@@ -5,7 +5,15 @@
 @endsection
 
 @section('content')
-    <div x-data="{ role: '{{ old('role', 'warga') }}', get labelPeran() { return this.role === 'warga' ? 'Warga' : 'Pengangkut Sampah' } }">
+    {{-- x-data harus di elemen HTML biasa, bukan di tag komponen Blade: @js tidak
+         ikut dikompilasi kalau ditaruh sebagai atribut <x-...>. --}}
+    <div x-data="formDaftar(@js($pohonWilayah), @js([
+        'role' => old('role', 'warga'),
+        'kabupaten' => old('kabupaten_id', ''),
+        'kecamatan' => old('kecamatan_id', ''),
+        'desa' => old('desa_id', ''),
+        'banjar' => old('banjar_id', ''),
+    ]))">
 
         <div>
             <p class="mb-2.5 font-mono text-xs uppercase tracking-[0.08em] text-leaf-600">Buat akun</p>
@@ -60,22 +68,6 @@
                     </div>
 
                     <div>
-                        <label for="banjar_id" class="mb-1.5 block text-xs font-semibold text-ink-soft">
-                            <span x-text="role === 'warga' ? 'Banjar' : 'Banjar Jangkauan'"></span>
-                        </label>
-                        <select id="banjar_id" name="banjar_id" required
-                            class="w-full rounded-[10px] border border-line bg-white px-3.5 py-3 text-sm text-ink focus:border-leaf-600 focus:outline-none focus:ring-[3px] focus:ring-leaf-100">
-                            <option value="" disabled {{ old('banjar_id') ? '' : 'selected' }}>Pilih banjar</option>
-                            @foreach ($banjars as $banjar)
-                                <option value="{{ $banjar->id }}" @selected(old('banjar_id') == $banjar->id)>{{ $banjar->name }}</option>
-                            @endforeach
-                        </select>
-                        @error('banjar_id')
-                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <div>
                         <label for="email" class="mb-1.5 block text-xs font-semibold text-ink-soft">Email</label>
                         <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="nama@email.com" required
                             class="w-full rounded-[10px] border border-line bg-white px-3.5 py-3 text-sm placeholder:text-ink-faint focus:border-leaf-600 focus:outline-none focus:ring-[3px] focus:ring-leaf-100">
@@ -91,6 +83,79 @@
                         @error('password')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
+                    </div>
+                </div>
+
+                {{-- Lokasi bertingkat: tiap pilihan mereset level di bawahnya --}}
+                @php
+                    $kelasSelect = 'w-full rounded-[10px] border border-line bg-white px-3.5 py-3 text-sm text-ink
+                                    focus:border-leaf-600 focus:outline-none focus:ring-[3px] focus:ring-leaf-100
+                                    disabled:cursor-not-allowed disabled:bg-paper disabled:text-ink-faint';
+                @endphp
+
+                <div class="mt-5 border-t border-line pt-5">
+                    <p class="mb-3 font-mono text-[11px] uppercase tracking-[0.06em] text-leaf-600">Lokasi</p>
+
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <label for="kabupaten_id" class="mb-1.5 block text-xs font-semibold text-ink-soft">Kabupaten</label>
+                            <select id="kabupaten_id" name="kabupaten_id" required
+                                x-model="kabupatenId" @change="gantiKabupaten()" class="{{ $kelasSelect }}">
+                                <option value="" disabled>Pilih kabupaten</option>
+                                <template x-for="w in pohon" :key="w.id">
+                                    <option :value="w.id" x-text="w.nama"></option>
+                                </template>
+                            </select>
+                            @error('kabupaten_id')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="kecamatan_id" class="mb-1.5 block text-xs font-semibold text-ink-soft">Kecamatan</label>
+                            <select id="kecamatan_id" name="kecamatan_id" required
+                                x-model="kecamatanId" @change="gantiKecamatan()"
+                                :disabled="!kabupatenId" class="{{ $kelasSelect }}">
+                                <option value="" disabled x-text="kabupatenId ? 'Pilih kecamatan' : 'Pilih kabupaten dulu'"></option>
+                                <template x-for="w in daftarKecamatan" :key="w.id">
+                                    <option :value="w.id" x-text="w.nama"></option>
+                                </template>
+                            </select>
+                            @error('kecamatan_id')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="desa_id" class="mb-1.5 block text-xs font-semibold text-ink-soft">Desa</label>
+                            <select id="desa_id" name="desa_id" required
+                                x-model="desaId" @change="gantiDesa()"
+                                :disabled="!kecamatanId" class="{{ $kelasSelect }}">
+                                <option value="" disabled x-text="kecamatanId ? 'Pilih desa' : 'Pilih kecamatan dulu'"></option>
+                                <template x-for="w in daftarDesa" :key="w.id">
+                                    <option :value="w.id" x-text="w.nama"></option>
+                                </template>
+                            </select>
+                            @error('desa_id')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="banjar_id" class="mb-1.5 block text-xs font-semibold text-ink-soft">
+                                <span x-text="role === 'warga' ? 'Banjar' : 'Banjar Jangkauan'"></span>
+                            </label>
+                            <select id="banjar_id" name="banjar_id" required
+                                x-model="banjarId" :disabled="!desaId" class="{{ $kelasSelect }}">
+                                <option value="" disabled x-text="desaId ? 'Pilih banjar' : 'Pilih desa dulu'"></option>
+                                <template x-for="w in daftarBanjar" :key="w.id">
+                                    <option :value="w.id" x-text="w.nama"></option>
+                                </template>
+                            </select>
+                            @error('banjar_id')
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
                     </div>
                 </div>
 
@@ -179,3 +244,49 @@
 
     </div>
 @endsection
+
+@push('scripts')
+<script>
+    /**
+     * Pohon wilayah dikirim utuh dari server, jadi pergantian dropdown tidak
+     * perlu menunggu request. Tiap level yang diganti mengosongkan level di
+     * bawahnya supaya tidak tersisa kombinasi yang tidak nyambung.
+     */
+    function formDaftar(pohon, lama) {
+        return {
+            pohon,
+            role: lama.role,
+            kabupatenId: lama.kabupaten,
+            kecamatanId: lama.kecamatan,
+            desaId: lama.desa,
+            banjarId: lama.banjar,
+
+            get labelPeran() {
+                return this.role === 'warga' ? 'Warga' : 'Pengangkut Sampah';
+            },
+            get daftarKecamatan() {
+                return this.pohon.find((w) => w.id == this.kabupatenId)?.anak ?? [];
+            },
+            get daftarDesa() {
+                return this.daftarKecamatan.find((w) => w.id == this.kecamatanId)?.anak ?? [];
+            },
+            get daftarBanjar() {
+                return this.daftarDesa.find((w) => w.id == this.desaId)?.anak ?? [];
+            },
+
+            gantiKabupaten() {
+                this.kecamatanId = '';
+                this.desaId = '';
+                this.banjarId = '';
+            },
+            gantiKecamatan() {
+                this.desaId = '';
+                this.banjarId = '';
+            },
+            gantiDesa() {
+                this.banjarId = '';
+            },
+        };
+    }
+</script>
+@endpush
