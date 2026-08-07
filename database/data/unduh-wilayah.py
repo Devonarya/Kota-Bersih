@@ -13,16 +13,26 @@ Jalankan:
 """
 
 import json
+import pathlib
 import ssl
 import sys
 import urllib.request
 
 BASIS = "https://wilayah.id/api"
+DIREKTORI_DASAR = pathlib.Path(__file__).resolve().parent
+
+
+def validasi_tujuan(tujuan):
+    jalur = pathlib.Path(tujuan).resolve()
+    if not jalur.is_relative_to(DIREKTORI_DASAR):
+        raise ValueError(f"tujuan harus di dalam {DIREKTORI_DASAR}, dapat: {jalur}")
+    return jalur
 
 
 def ambil(jalur):
     url = f"{BASIS}/{jalur}.json"
     konteks = ssl.create_default_context()
+    konteks.minimum_version = ssl.TLSVersion.TLSv1_2
     try:
         with urllib.request.urlopen(url, context=konteks, timeout=30) as resp:
             return json.loads(resp.read()).get("data", [])
@@ -34,7 +44,9 @@ def ambil(jalur):
 
 def main():
     provinsi = sys.argv[1] if len(sys.argv) > 1 else "51"
-    tujuan = sys.argv[2] if len(sys.argv) > 2 else "database/data/wilayah-bali.json"
+    tujuan = validasi_tujuan(
+        sys.argv[2] if len(sys.argv) > 2 else "database/data/wilayah-bali.json"
+    )
 
     hasil = {"provinsi": provinsi, "kabupaten": [], "kecamatan": [], "desa": []}
 

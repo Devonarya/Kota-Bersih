@@ -143,7 +143,7 @@
 
                         <div>
                             <label for="banjar_id" class="mb-1.5 block text-xs font-semibold text-ink-soft">
-                                <span x-text="role === 'warga' ? 'Banjar' : 'Banjar Jangkauan'"></span>
+                                <span x-text="role === 'warga' ? 'Banjar' : 'Banjar Jangkauan'">Banjar</span>
                             </label>
                             <select id="banjar_id" name="banjar_id" required
                                 x-model="banjarId" :disabled="!desaId" class="{{ $kelasSelect }}">

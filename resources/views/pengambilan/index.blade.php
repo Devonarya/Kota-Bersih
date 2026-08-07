@@ -155,9 +155,9 @@
                 @csrf
 
                 <div class="mb-5">
-                    <label class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">
+                    <span class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">
                         Jenis Sampah <span class="font-normal text-ink-faint">(bisa pilih lebih dari satu)</span>
-                    </label>
+                    </span>
 
                     <div class="flex flex-wrap gap-2.5">
                         @foreach ($jenisOpsi as $nilai => $opsi)
@@ -184,7 +184,7 @@
                 </div>
 
                 <div class="mb-5">
-                    <label class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">Lokasi Pengambilan</label>
+                    <span class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">Lokasi Pengambilan</span>
 
                     <div class="flex items-center gap-3 rounded-xl border border-line bg-paper px-3.5 py-3">
                         <svg class="h-[18px] w-[18px] shrink-0 text-leaf-700" viewBox="0 0 24 24" fill="none"
@@ -202,7 +202,7 @@
                 </div>
 
                 <div class="mb-5">
-                    <label class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">Waktu Diinginkan</label>
+                    <span class="mb-2.5 block text-[12.5px] font-semibold text-ink-soft">Waktu Diinginkan</span>
 
                     <div class="flex flex-wrap gap-2">
                         @foreach ($waktuOpsi as $nilai => $opsi)

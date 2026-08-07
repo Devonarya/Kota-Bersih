@@ -33,7 +33,8 @@
                 x-data x-ref="avatarForm">
                 @csrf
 
-                <input type="file" name="avatar" accept="image/*" class="hidden" x-ref="avatarInput"
+                <label for="avatar" class="sr-only">Foto profil</label>
+                <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden" x-ref="avatarInput"
                     @change="$refs.avatarForm.submit()">
 
                 <button type="button" @click="$refs.avatarInput.click()"
@@ -55,8 +56,8 @@
                 @method('PATCH')
 
                 <div>
-                    <label class="mb-1 block text-sm text-gray-600">Nama Lengkap</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}" required
+                    <label for="name" class="mb-1 block text-sm text-gray-600">Nama Lengkap</label>
+                    <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}" required
                         class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                     @error('name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -64,8 +65,8 @@
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-sm text-gray-600">Email</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}" required
+                    <label for="email" class="mb-1 block text-sm text-gray-600">Email</label>
+                    <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}" required
                         class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                     @error('email')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -73,14 +74,14 @@
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-sm text-gray-600">Nomor Telepon</label>
-                    <input type="text" name="phone" value="{{ old('phone', $user->phone) }}"
+                    <label for="phone" class="mb-1 block text-sm text-gray-600">Nomor Telepon</label>
+                    <input type="text" id="phone" name="phone" value="{{ old('phone', $user->phone) }}"
                         class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-sm text-gray-600">Alamat</label>
-                    <input type="text" name="address" value="{{ old('address', $user->address) }}"
+                    <label for="address" class="mb-1 block text-sm text-gray-600">Alamat</label>
+                    <input type="text" id="address" name="address" value="{{ old('address', $user->address) }}"
                         class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                 </div>
 
@@ -99,8 +100,8 @@
                 @method('PUT')
 
                 <div>
-                    <label class="mb-1 block text-sm text-gray-600">Kata Sandi Saat Ini</label>
-                    <input type="password" name="current_password" required
+                    <label for="current_password" class="mb-1 block text-sm text-gray-600">Kata Sandi Saat Ini</label>
+                    <input type="password" id="current_password" name="current_password" required
                         class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                     @error('current_password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
@@ -108,8 +109,8 @@
                 </div>
 
                 <div>
-                    <label class="mb-1 block text-sm text-gray-600">Kata Sandi Baru</label>
-                    <input type="password" name="password" required
+                    <label for="password" class="mb-1 block text-sm text-gray-600">Kata Sandi Baru</label>
+                    <input type="password" id="password" name="password" required
                         class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>

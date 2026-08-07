@@ -163,12 +163,13 @@
                     </div>
 
                     <div x-show="hari === 'pilih'" x-cloak class="mt-3">
-                        <input type="date" name="scheduled_date" x-model="tanggal" min="{{ now()->toDateString() }}"
+                        <label for="scheduled_date" class="sr-only">Tanggal pengambilan</label>
+                        <input type="date" id="scheduled_date" name="scheduled_date" x-model="tanggal" min="{{ now()->toDateString() }}"
                             class="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                     </div>
 
-                    <p class="mt-5 text-sm text-gray-600">Perkiraan Waktu</p>
-                    <select name="scheduled_time_slot" x-model="slot"
+                    <label for="scheduled_time_slot" class="mt-5 block text-sm text-gray-600">Perkiraan Waktu</label>
+                    <select id="scheduled_time_slot" name="scheduled_time_slot" x-model="slot"
                         class="mt-2 w-full rounded-xl border border-gray-300 px-4 py-2.5 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
                         @foreach ($timeSlots as $value => $label)
                             <option value="{{ $value }}">{{ $label }}</option>

@@ -62,7 +62,7 @@
         </div>
 
         <div>
-            <label class="{{ $kelasLabel }}">Gambar Sampul</label>
+            <span class="{{ $kelasLabel }}">Gambar Sampul</span>
 
             @if ($news?->cover_image_path)
                 <div class="mb-2.5 flex items-center gap-3">
@@ -83,8 +83,8 @@
         </div>
 
         <div>
-            <label class="{{ $kelasLabel }}">Isi Berita</label>
-            <div id="content-editor"
+            <label id="content-label" class="{{ $kelasLabel }}">Isi Berita</label>
+            <div id="content-editor" aria-labelledby="content-label"
                 class="rounded-[10px] border border-line bg-white text-sm
                        [&_.ql-container]:min-h-[180px] [&_.ql-container]:rounded-b-[10px] [&_.ql-container]:border-0 [&_.ql-container]:font-body [&_.ql-container]:text-sm
                        [&_.ql-toolbar]:rounded-t-[10px] [&_.ql-toolbar]:border-0 [&_.ql-toolbar]:border-b [&_.ql-toolbar]:border-line"></div>

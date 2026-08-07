@@ -19,11 +19,12 @@
         {{-- Pencarian --}}
         <div class="mt-7">
             <form method="GET" class="relative max-w-md">
+                <label for="cari-anggota" class="sr-only">Cari nama</label>
                 <svg class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-faint"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" />
                 </svg>
-                <input type="search" name="cari" value="{{ $cari }}" placeholder="Cari nama..."
+                <input type="search" id="cari-anggota" name="cari" value="{{ $cari }}" placeholder="Cari nama..."
                     class="w-full rounded-[10px] border border-line bg-white py-2.5 pl-[38px] pr-3.5 text-sm text-ink
                            focus:border-leaf-600 focus:outline-none focus:ring-[3px] focus:ring-leaf-100">
             </form>

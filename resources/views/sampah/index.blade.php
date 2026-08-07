@@ -34,10 +34,12 @@
     </div>
 
     <form method="GET" action="{{ route('sampah.index') }}" class="mt-4 flex flex-wrap gap-3">
-        <input type="month" name="month" value="{{ $month }}" onchange="this.form.submit()"
+        <label for="month" class="sr-only">Bulan</label>
+        <input type="month" id="month" name="month" value="{{ $month }}" onchange="this.form.submit()"
             class="rounded-xl border border-gray-300 px-4 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
 
-        <select name="jenis" onchange="this.form.submit()"
+        <label for="jenis" class="sr-only">Jenis Sampah</label>
+        <select id="jenis" name="jenis" onchange="this.form.submit()"
             class="rounded-xl border border-gray-300 px-4 py-2 text-sm text-gray-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500">
             <option value="semua" @selected($jenis === 'semua')>Semua Jenis</option>
             @foreach ($jenisLabels as $value => $label)
