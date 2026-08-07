@@ -11,10 +11,17 @@
 
     <div x-data="{ turunOpen: false, hapusOpen: false, item: {} }">
 
-        <div class="pb-1">
-            <p class="mb-2 font-mono text-xs uppercase tracking-[0.08em] text-leaf-600">Konten</p>
-            <h1 class="font-display text-[25px] font-semibold text-leaf-900">Pengumuman &amp; Berita</h1>
-            <p class="mt-1.5 text-sm text-ink-soft">Semua tulisan warga dan pengangkut, termasuk yang masih draf.</p>
+        <div class="flex flex-wrap items-start justify-between gap-4 pb-1">
+            <div>
+                <p class="mb-2 font-mono text-xs uppercase tracking-[0.08em] text-leaf-600">Konten</p>
+                <h1 class="font-display text-[25px] font-semibold text-leaf-900">Pengumuman &amp; Berita</h1>
+                <p class="mt-1.5 text-sm text-ink-soft">Semua tulisan warga dan pengangkut, termasuk yang masih draf.</p>
+            </div>
+
+            <a href="{{ route('admin.berita.create') }}"
+                class="shrink-0 whitespace-nowrap rounded-[10px] bg-leaf-700 px-5 py-2.5 text-sm font-semibold text-white hover:bg-leaf-900">
+                Buat Pengumuman
+            </a>
         </div>
 
         @if ($errors->any())

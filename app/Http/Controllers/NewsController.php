@@ -174,9 +174,12 @@ class NewsController extends Controller
     }
 
     /**
+     * Publik supaya Admin\NewsController::store() bisa memakai aturan yang sama
+     * tanpa menduplikasi validasinya.
+     *
      * @return array<string, mixed>
      */
-    private function validasi(Request $request): array
+    public function validasi(Request $request): array
     {
         return $request->validate([
             'title' => ['required', 'string', 'max:255'],

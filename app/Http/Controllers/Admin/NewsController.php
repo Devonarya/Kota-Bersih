@@ -7,6 +7,7 @@ use App\Http\Controllers\NewsController as PublicNewsController;
 use App\Models\News;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -28,6 +29,36 @@ class NewsController extends Controller
                 ->get(),
             'categories' => PublicNewsController::CATEGORIES,
         ]);
+    }
+
+    public function create(): View
+    {
+        return view('admin.pengumuman-create', [
+            'categories' => PublicNewsController::CATEGORIES,
+        ]);
+    }
+
+    /**
+     * Kategorinya selalu dipaksa 'pengumuman' di sini, apa pun yang dikirim
+     * form — form-nya memang menguncinya lewat input tersembunyi, tapi
+     * nilainya tetap tidak dipercaya begitu saja dari sisi klien.
+     */
+    public function store(Request $request): RedirectResponse
+    {
+        $validated = (new PublicNewsController)->validasi($request);
+
+        $request->user()->news()->create([
+            'title' => $validated['title'],
+            'category' => 'pengumuman',
+            'content' => $validated['content'],
+            'cover_image_path' => $request->file('cover_image')?->store('news', 'public'),
+            'status' => $validated['action'] === 'publish' ? 'published' : 'draft',
+            'published_at' => $validated['published_at'],
+        ]);
+
+        return redirect()->route('admin.berita.index')->with('status', $validated['action'] === 'publish'
+            ? 'Pengumuman berhasil dipublikasikan.'
+            : 'Pengumuman berhasil disimpan sebagai draf.');
     }
 
     public function demote(News $news): RedirectResponse

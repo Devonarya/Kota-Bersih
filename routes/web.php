@@ -46,6 +46,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/pengangkut', [MemberController::class, 'pengangkut'])->name('pengangkut.index');
 
         Route::get('/berita', [AdminNewsController::class, 'index'])->name('berita.index');
+        Route::get('/berita/buat', [AdminNewsController::class, 'create'])->name('berita.create');
+        Route::post('/berita', [AdminNewsController::class, 'store'])->name('berita.store');
         Route::patch('/berita/{news}/turunkan', [AdminNewsController::class, 'demote'])->name('berita.demote');
         Route::delete('/berita/{news}', [AdminNewsController::class, 'destroy'])->name('berita.destroy');
 

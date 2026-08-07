@@ -1,5 +1,11 @@
-{{-- Tamu membaca dengan rangka publik, anggota yang sudah login tetap di dalam sidebar. --}}
-@extends(auth()->check() ? 'layouts.app' : 'layouts.public')
+{{-- Tamu membaca dengan rangka publik, anggota yang sudah login tetap di dalam sidebar
+     masing-masing — admin pakai sidebar admin, bukan sidebar anggota biasa. --}}
+@php
+    $rangka = ! auth()->check()
+        ? 'layouts.public'
+        : (auth()->user()->role === 'admin' ? 'layouts.admin' : 'layouts.app');
+@endphp
+@extends($rangka)
 
 @php
     $kategoriGaya = [
@@ -15,8 +21,13 @@
     ];
     $ikonBawaan = '<path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h5"/>';
 
-    // Anggota kembali ke daftar berita miliknya; tamu kembali ke bagian berita di landing.
-    $tautanKembali = auth()->check() ? route('news.index') : route('landing').'#berita';
+    // Admin kembali ke halaman kelola Pengumuman & Berita, anggota biasa ke daftar
+    // berita miliknya, tamu kembali ke bagian berita di landing.
+    $tautanKembali = match (true) {
+        ! auth()->check() => route('landing').'#berita',
+        auth()->user()->role === 'admin' => route('admin.berita.index'),
+        default => route('news.index'),
+    };
 @endphp
 
 @section('content')

@@ -1,12 +1,17 @@
 {{--
-    Form berita, dipakai halaman tambah maupun ubah.
+    Form berita, dipakai halaman tambah maupun ubah — juga dipakai admin untuk
+    membuat pengumuman lewat $kategoriTetap & $aksiSimpan.
 
     Variabel yang diharapkan:
-    - $news       News|null  — null berarti tulisan baru
-    - $categories array
+    - $news          News|null  — null berarti tulisan baru
+    - $categories    array
+    - $kategoriTetap string|null — kalau diisi, dropdown kategori diganti tampilan terkunci
+    - $aksiSimpan     string|null — tujuan submit waktu $news masih null, bawaannya route('news.store')
 --}}
 @php
     $news ??= null;
+    $kategoriTetap ??= null;
+    $aksiSimpan ??= route('news.store');
     $sudahTerbit = $news?->status === 'published';
 
     // Nilai lama menang supaya isian tidak hilang saat validasi gagal.
@@ -19,7 +24,7 @@
 
 <div x-data="{ konfirmasiOpen: false }" class="mt-6 max-w-[760px]">
     <x-card as="form" id="news-form" method="POST" enctype="multipart/form-data"
-        action="{{ $news ? route('news.update', $news) : route('news.store') }}"
+        action="{{ $news ? route('news.update', $news) : $aksiSimpan }}"
         class="space-y-5 p-6">
         @csrf
         @if ($news)
@@ -38,13 +43,19 @@
 
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <div>
-                <label for="category" class="{{ $kelasLabel }}">Kategori</label>
-                <select id="category" name="category" required class="{{ $kelasField }}">
-                    <option value="" disabled @selected(! $nilai('category'))>Pilih Kategori</option>
-                    @foreach ($categories as $value => $label)
-                        <option value="{{ $value }}" @selected($nilai('category') === $value)>{{ $label }}</option>
-                    @endforeach
-                </select>
+                @if ($kategoriTetap)
+                    <span class="{{ $kelasLabel }}">Kategori</span>
+                    <div class="{{ $kelasField }} bg-paper text-ink-soft">{{ $categories[$kategoriTetap] ?? $kategoriTetap }}</div>
+                    <input type="hidden" name="category" value="{{ $kategoriTetap }}">
+                @else
+                    <label for="category" class="{{ $kelasLabel }}">Kategori</label>
+                    <select id="category" name="category" required class="{{ $kelasField }}">
+                        <option value="" disabled @selected(! $nilai('category'))>Pilih Kategori</option>
+                        @foreach ($categories as $value => $label)
+                            <option value="{{ $value }}" @selected($nilai('category') === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                @endif
                 @error('category')
                     <p class="mt-1 text-xs text-clay-600">{{ $message }}</p>
                 @enderror
