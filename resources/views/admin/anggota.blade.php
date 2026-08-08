@@ -1,10 +1,6 @@
 {{-- Dipakai bersama halaman Warga dan Pengangkut; yang membedakan hanya teks & peran. --}}
 @extends('layouts.admin')
 
-@php
-    $labelPeran = ['warga' => 'Warga', 'pengangkut' => 'Pengangkut Sampah'];
-@endphp
-
 @section('content')
 
     <div x-data="{ detailOpen: false, item: {} }">
@@ -35,24 +31,7 @@
             @forelse ($anggota as $orang)
                 @php
                     $namaBanjar = $orang->banjar?->name ?? 'Tanpa banjar';
-                    $logo = $orang->banjar?->logo_path;
-
-                    $dataItem = [
-                        'nama' => $orang->name,
-                        'peran' => $labelPeran[$orang->role] ?? $orang->role,
-                        'hp' => $orang->phone ?: '—',
-                        'email' => $orang->email,
-                        'banjar' => $namaBanjar,
-                        'tanggal' => $orang->created_at->locale('id')->translatedFormat('d M Y'),
-                        'isWarga' => $orang->role === 'warga',
-                        'alamat' => $orang->address ?: '—',
-                        'jangkauan' => [$namaBanjar],
-                        'ktp' => $orang->ktp_number
-                            ? substr($orang->ktp_number, 0, 4).str_repeat('•', 8).substr($orang->ktp_number, -4)
-                            : '—',
-                        'logoUrl' => $logo ? asset('storage/'.$logo) : null,
-                        'logoNama' => $logo ? basename($logo) : 'Belum ada logo banjar',
-                    ];
+                    $dataItem = $orang->detailPayload();
                 @endphp
 
                 <x-card class="flex flex-wrap items-center justify-between gap-4 px-[18px] py-4">

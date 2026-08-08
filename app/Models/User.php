@@ -46,6 +46,49 @@ class User extends Authenticatable
         return $this->avatar_path ? asset('storage/'.$this->avatar_path) : null;
     }
 
+    public function labelPeran(): string
+    {
+        return match ($this->role) {
+            'warga' => 'Warga',
+            'pengangkut' => 'Pengangkut Sampah',
+            default => $this->role,
+        };
+    }
+
+    public function maskedKtp(): string
+    {
+        if (! $this->ktp_number) {
+            return '—';
+        }
+
+        return substr($this->ktp_number, 0, 4).str_repeat('•', 8).substr($this->ktp_number, -4);
+    }
+
+    /**
+     * Data anggota untuk modal detail (halaman Anggota & Permintaan).
+     *
+     * @return array<string, mixed>
+     */
+    public function detailPayload(): array
+    {
+        $logo = $this->banjar?->logo_path;
+
+        return [
+            'nama' => $this->name,
+            'peran' => $this->labelPeran(),
+            'hp' => $this->phone ?: '—',
+            'email' => $this->email,
+            'banjar' => $this->banjar?->name ?? 'Tanpa banjar',
+            'tanggal' => $this->created_at->locale('id')->translatedFormat('d M Y'),
+            'isWarga' => $this->role === 'warga',
+            'alamat' => $this->address ?: '—',
+            'jangkauan' => [$this->banjar?->name ?? 'Tanpa banjar'],
+            'ktp' => $this->maskedKtp(),
+            'logoUrl' => $logo ? asset('storage/'.$logo) : null,
+            'logoNama' => $logo ? basename($logo) : 'Belum ada logo banjar',
+        ];
+    }
+
     /**
      * @return BelongsTo<Banjar, $this>
      */

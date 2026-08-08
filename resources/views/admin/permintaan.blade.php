@@ -66,23 +66,9 @@
                 @php
                     $gaya = $gayaStatus[$anggota->membership_status] ?? $gayaStatus['menunggu'];
                     $namaBanjar = $anggota->banjar?->name ?? 'Tanpa banjar';
-                    $logo = $anggota->banjar?->logo_path;
 
                     $dataItem = [
-                        'nama' => $anggota->name,
-                        'peran' => $labelPeran[$anggota->role] ?? $anggota->role,
-                        'hp' => $anggota->phone ?: '—',
-                        'email' => $anggota->email,
-                        'banjar' => $namaBanjar,
-                        'tanggal' => $anggota->created_at->locale('id')->translatedFormat('d M Y'),
-                        'isWarga' => $anggota->role === 'warga',
-                        'alamat' => $anggota->address ?: '—',
-                        'jangkauan' => [$namaBanjar],
-                        'ktp' => $anggota->ktp_number
-                            ? substr($anggota->ktp_number, 0, 4).str_repeat('•', 8).substr($anggota->ktp_number, -4)
-                            : '—',
-                        'logoUrl' => $logo ? asset('storage/'.$logo) : null,
-                        'logoNama' => $logo ? basename($logo) : 'Belum ada logo banjar',
+                        ...$anggota->detailPayload(),
                         'menunggu' => $anggota->membership_status === 'menunggu',
                         'aksiSetujui' => route('admin.permintaan.approve', $anggota),
                         'aksiTolak' => route('admin.permintaan.reject', $anggota),
